@@ -1,0 +1,112 @@
+excluded:
+  - .swiftpm
+  - Sourcery/Generated
+  - DerivedData/
+  - "**/*generated*.swift"
+  - "**/**/*generated*.swift"
+  - "**/**/**/*generated*.swift"
+  - "**/**/**/**/*generated*.swift"
+  - "**/Package.swift"
+  - Pods/
+  - DerivedData/
+  - UIExtensions/UIExtensions/L10n/L10n.swift
+  - UIExtensions/MergeL10n/main.swift
+  - BluetoothSetup/BluetoothSetup/Bootstrap/L10n/L10n.swift
+  - BluetoothUI/BluetoothUI/Bootstrap/L10n/L10n.swift
+  - TeufelBluetooth/TeufelBluetooth/Bootstrap/L10n/L10n.swift
+  - Tools/MergeL10n.swift
+  - Tools/FetchZeplin.swift
+  - Tools/Templates
+opt_in_rules: # some rules are only opt-in
+  - class_delegate_protocol
+  - closure_end_indentation
+  - closure_spacing
+  - collection_alignment
+  - colon
+  - contains_over_first_not_nil
+  - empty_string
+  - empty_xctest_method
+  - first_where
+  - last_where
+  - literal_expression_end_indentation
+  - lower_acl_than_parent
+  - modifier_order
+  - multiline_parameters
+  - no_extension_access_modifier
+  - nslocalizedstring_key
+  - operator_usage_whitespace
+  - overridden_super_call
+  - override_in_extension
+  - pattern_matching_keywords
+  - redundant_nil_coalescing
+  - sorted_first_last
+  - sorted_imports
+  - unused_import
+  - unused_declaration
+  - vertical_whitespace
+  - file_header
+file_header:
+  required_pattern: |
+                    \/\/
+                    \/\/  SWIFTLINT_CURRENT_FILENAME
+                    \/\/.*
+                    \/\/
+                    \/\/  Created by .* on \d{1,2}\.\d{1,2}\.\d{2,4}\.
+                    \/\/  Copyright © \d{4} (Lautsprecher Teufel GmbH|Zendesk)\. All rights reserved\.
+                    \/\/
+disabled_rules:
+  # - block_based_kvo
+  # - trailing_whitespace
+  # - force_cast
+  - todo
+  - large_tuple
+  - multiple_closures_with_trailing_closure # does not play well with SwiftUI
+line_length: 150
+nesting:
+  type_level:
+    warning: 2
+type_name:
+  max_length: # warning and error
+   warning: 50
+   error: 90
+type_body_length:
+  warning: 320
+file_length:
+  warning: 560
+identifier_name:
+  allowed_symbols: "_"
+  min_length: 2
+  max_length: 50
+  excluded:
+    - a
+    - b
+    - c
+    - d
+    - e
+    - f 
+    - g
+    - i
+    - l
+    - p
+    - r
+    - "on"
+    - s
+    - T
+cyclomatic_complexity:
+  ignores_case_statements: true
+# TODO: Include this rule once all 19 usages are fixed
+custom_rules:
+  l10n_on_view:
+    included: ".*\\View.swift"
+    name: "L10n on View"
+    regex: "(L10n)"
+    message: "Please move the L10n to the Presenter"
+    severity: warning # violation severity. optional.
+  only_teufeltext:
+    included: ".*.swift"
+    excluded: ".*\\Tests.swift"
+    name: "Only use TeufelText"
+    # Match `Text("` or `Text(verbatim` and ` Text(` for the three worst offenders
+    regex: '((Text\(")|(Text\(verbatim)|( Text\())'
+    message: "Please replace instances of Text with TeufelText"
+    severity: warning # violation severity. optional.

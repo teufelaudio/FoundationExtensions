@@ -1,0 +1,9 @@
+sources:
+  - FoundationExtensions
+templates:
+  - ../Sourcery/Templates
+output:
+  FoundationExtensions/Sourcery
+args:
+  imports: ["Foundation", "Combine"]
+  testable-imports: ["FoundationExtensions"]
