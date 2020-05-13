@@ -1,7 +1,7 @@
 sources:
   - FoundationExtensions
 templates:
-  - ../Sourcery/Templates
+  - ../Tools/Sourcery/Templates/Sources
 output:
   FoundationExtensions/Sourcery
 args:

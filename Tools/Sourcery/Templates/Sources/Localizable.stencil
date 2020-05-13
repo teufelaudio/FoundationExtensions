@@ -1,6 +1,4 @@
-import FoundationExtensions
 import SwiftUI
-
 {% for import in argument.imports %}
 import {{ import }}
 {% endfor %}
