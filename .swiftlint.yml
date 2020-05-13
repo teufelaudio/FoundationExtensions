@@ -6,7 +6,7 @@ excluded:
   - "**/**/*generated*.swift"
   - "**/**/**/*generated*.swift"
   - "**/**/**/**/*generated*.swift"
-  - "**/Package.swift"
+  - "Package.swift"
   - DerivedData/
   - Pods/
   - Tools/
