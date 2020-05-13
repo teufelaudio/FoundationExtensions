@@ -1,22 +1,15 @@
 excluded:
   - .swiftpm
-  - Sourcery/Generated
-  - DerivedData/
+  - Sources/Sourcery
+  - Tests/Sourcery
   - "**/*generated*.swift"
   - "**/**/*generated*.swift"
   - "**/**/**/*generated*.swift"
   - "**/**/**/**/*generated*.swift"
   - "**/Package.swift"
-  - Pods/
   - DerivedData/
-  - UIExtensions/UIExtensions/L10n/L10n.swift
-  - UIExtensions/MergeL10n/main.swift
-  - BluetoothSetup/BluetoothSetup/Bootstrap/L10n/L10n.swift
-  - BluetoothUI/BluetoothUI/Bootstrap/L10n/L10n.swift
-  - TeufelBluetooth/TeufelBluetooth/Bootstrap/L10n/L10n.swift
-  - Tools/MergeL10n.swift
-  - Tools/FetchZeplin.swift
-  - Tools/Templates
+  - Pods/
+  - Tools/
 opt_in_rules: # some rules are only opt-in
   - class_delegate_protocol
   - closure_end_indentation
