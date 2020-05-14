@@ -127,6 +127,35 @@ extension BinaryInteger {
                               current: Double(current),
                               constrainedToValidPercentage: constrainedToValidPercentage)
     }
+
+    /// Combined operation of `linearProgress` and `linearInterpolation`.
+    ///
+    /// First gets the progress of `current` between `minimum` and `maximum`, optionally
+    /// `constrainedToValidPercentage`, then interpolates this onto the bracket defined by
+    /// `lowerBound` and `upperBound`.
+    /// - Parameters:
+    ///   - minimum: Absolute minimum value for the progress calculation.
+    ///   - maximum: Absolute maximum value for the progress calculation.
+    ///   - current: Absolute current value for the progress calculation.
+    ///   - constrainedToValidPercentage: Determines if percentage is clamped to `0...1`.
+    ///   - lowerBound: Absolute lower bound of the interpolation bracket.
+    ///   - upperBound: Absolute upper bound of the interpolation bracket.
+    /// - Returns: The absolute value returned by using the calculated percentage as `current` for
+    ///     `linearInterpolation`.
+    public static func interpolateProgress(
+        minimum: Self,
+        maximum: Self,
+        current: Self,
+        constrainedToValidPercentage: Bool = true,
+        ontoBracketWith lowerBound: Double,
+        upperBound: Double) -> Double {
+        Double.interpolateProgress(minimum: Double(minimum),
+                                   maximum: Double(maximum),
+                                   current: Double(current),
+                                   constrainedToValidPercentage: constrainedToValidPercentage,
+                                   ontoBracketWith: Double(lowerBound),
+                                   upperBound: upperBound)
+    }
 }
 
 extension Double {
