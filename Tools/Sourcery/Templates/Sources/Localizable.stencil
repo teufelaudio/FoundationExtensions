@@ -1,0 +1,66 @@
+import SwiftUI
+{% for import in argument.imports %}
+import {{ import }}
+{% endfor %}
+
+private class L10nReferenceType { }
+
+{% for type in types.enums where type.based.Localizable or type.rawTypeName|lowercase == "localizable" or type|annotated:"Localizable" %}{% if type.name != "Localizable" %}
+extension {{ type.name }} {
+    {{ type.accessLevel }} var key: LocalizedStringKey {
+        switch self {
+        {% for case in type.cases %}
+        {% if case.hasAssociatedValue %}
+        case let .{{ case.name }}(args):
+            var interpolatedString = LocalizedStringKey.StringInterpolation(literalCapacity: 0, interpolationCount: {{ case.associatedValues.count }})
+            interpolatedString.appendLiteral("\(rootKey).{{ case.name }}")
+            interpolatedString.appendLiteral("[")
+            {% for associatedValue in case.associatedValues %}
+            {% if associatedValue|annotated:"format" %}
+            interpolatedString.appendInterpolation(args.{{ forloop.counter0 }}, specifier: "{{ associatedValue.annotations.format }}")
+            {% else %}
+            interpolatedString.appendInterpolation(args.{{ forloop.counter0 }})
+            {% endif %}
+            {% if not forloop.last %}
+            interpolatedString.appendLiteral("|")
+            {% else %}
+            interpolatedString.appendLiteral("]")
+            {% endif %}
+            {% endfor %}
+            return LocalizedStringKey(stringInterpolation: interpolatedString)
+        {% else %}
+        case .{{ case.name }}:
+            return "{{ type.name }}.{{ case.name }}"
+        {% endif %}
+        {% endfor %}
+        }
+    }
+
+    {{ type.accessLevel }} var localizedString: String {
+        switch self {
+        {% for case in type.cases %}
+        {% if case.hasAssociatedValue %}
+        case let .{{ case.name }}({% for associatedValue in case.associatedValues %}{{ associatedValue.localName }}{{ ', ' if not forloop.last }}{% endfor %}):
+            return String(format: LS(
+                "{{ type.name }}.{{ case.name }}[{% for associatedValue in case.associatedValues %}{% if associatedValue|annotated:"format" %}{{ associatedValue.annotations.format }}{% else %}%@{% endif %}{% if not forloop.last %}|{% endif %}{% endfor %}]", 
+                    bundle: Bundle(for: L10nReferenceType.self),
+                comment: "{{ case.annotations.comment }}"
+            ), {% for associatedValue in case.associatedValues %}{{ associatedValue.localName }}{{ ', ' if not forloop.last }}{% endfor %})
+        {% else %}
+        case .{{ case.name }}:
+            return LS(
+                "{{ type.name }}.{{ case.name }}",
+                bundle: Bundle(for: L10nReferenceType.self),
+                comment: "{{ case.annotations.comment }}"
+            )
+        {% endif %}
+        {% endfor %}
+        }
+    }
+
+    {{ type.accessLevel }} var rootKey: String {
+        "{{ type.name }}"
+    }
+}
+{% endif %}
+{% endfor %}
