@@ -25,9 +25,10 @@ extension Promise {
         _ p2: Promise<P2, Failure>,
         map: @escaping (P1, P2) -> Output
     ) -> Promise<Output, Failure> {
-        Publishers.Zip(p1, p2)
-            .map(map)
-            .promise
+        Promise(
+            Publishers.Zip(p1, p2)
+                .map(map)
+        )
     }
 
     /// Zips three promises in a promise. The upstream results will be merged with the provided map function.
@@ -46,9 +47,10 @@ extension Promise {
         _ p3: Promise<P3, Failure>,
         map: @escaping (P1, P2, P3) -> Output
     ) -> Promise<Output, Failure> {
-        Publishers.Zip3(p1, p2, p3)
-            .map(map)
-            .promise
+        Promise(
+            Publishers.Zip3(p1, p2, p3)
+                .map(map)
+        )
     }
 
     /// Zips four promises in a promise. The upstream results will be merged with the provided map function.
@@ -69,9 +71,10 @@ extension Promise {
         _ p4: Promise<P4, Failure>,
         map: @escaping (P1, P2, P3, P4) -> Output
     ) -> Promise<Output, Failure> {
-        Publishers.Zip4(p1, p2, p3, p4)
-            .map(map)
-            .promise
+        Promise(
+            Publishers.Zip4(p1, p2, p3, p4)
+                .map(map)
+        )
     }
 
     /// Zips five promises in a promise. The upstream results will be merged with the provided map function.
@@ -94,14 +97,15 @@ extension Promise {
         _ p5: Promise<P5, Failure>,
         map: @escaping (P1, P2, P3, P4, P5) -> Output
     ) -> Promise<Output, Failure> {
-        Publishers.Zip(
-            Publishers.Zip4(p1, p2, p3, p4),
-            p5
+        Promise(
+            Publishers.Zip(
+                Publishers.Zip4(p1, p2, p3, p4),
+                p5
+            )
+            .map { tuple -> Output in
+                map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1)
+            }
         )
-        .map { tuple -> Output in
-            map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1)
-        }
-        .promise
     }
 
     /// Zips six promises in a promise. The upstream results will be merged with the provided map function.
@@ -126,14 +130,15 @@ extension Promise {
         _ p6: Promise<P6, Failure>,
         map: @escaping (P1, P2, P3, P4, P5, P6) -> Output
     ) -> Promise<Output, Failure> {
-        Publishers.Zip(
-            Publishers.Zip4(p1, p2, p3, p4),
-            Publishers.Zip(p5, p6)
+        Promise(
+            Publishers.Zip(
+                Publishers.Zip4(p1, p2, p3, p4),
+                Publishers.Zip(p5, p6)
+            )
+            .map { tuple -> Output in
+                map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1)
+            }
         )
-        .map { tuple -> Output in
-            map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1)
-        }
-        .promise
     }
 
     /// Zips seven promises in a promise. The upstream results will be merged with the provided map function.
@@ -160,14 +165,15 @@ extension Promise {
         _ p7: Promise<P7, Failure>,
         map: @escaping (P1, P2, P3, P4, P5, P6, P7) -> Output
     ) -> Promise<Output, Failure> {
-        Publishers.Zip(
-            Publishers.Zip4(p1, p2, p3, p4),
-            Publishers.Zip3(p5, p6, p7)
+        Promise(
+            Publishers.Zip(
+                Publishers.Zip4(p1, p2, p3, p4),
+                Publishers.Zip3(p5, p6, p7)
+            )
+            .map { tuple -> Output in
+                map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1, tuple.1.2)
+            }
         )
-        .map { tuple -> Output in
-            map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1, tuple.1.2)
-        }
-        .promise
     }
 
     /// Zips eight promises in a promise. The upstream results will be merged with the provided map function.
@@ -196,14 +202,15 @@ extension Promise {
         _ p8: Promise<P8, Failure>,
         map: @escaping (P1, P2, P3, P4, P5, P6, P7, P8) -> Output
     ) -> Promise<Output, Failure> {
-        Publishers.Zip(
-            Publishers.Zip4(p1, p2, p3, p4),
-            Publishers.Zip4(p5, p6, p7, p8)
+        Promise(
+            Publishers.Zip(
+                Publishers.Zip4(p1, p2, p3, p4),
+                Publishers.Zip4(p5, p6, p7, p8)
+            )
+            .map { tuple -> Output in
+                map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1, tuple.1.2, tuple.1.3)
+            }
         )
-        .map { tuple -> Output in
-            map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1, tuple.1.2, tuple.1.3)
-        }
-        .promise
     }
 
     /// Zips nine promises in a promise. The upstream results will be merged with the provided map function.
@@ -234,15 +241,16 @@ extension Promise {
         _ p9: Promise<P9, Failure>,
         map: @escaping (P1, P2, P3, P4, P5, P6, P7, P8, P9) -> Output
     ) -> Promise<Output, Failure> {
-        Publishers.Zip3(
-            Publishers.Zip4(p1, p2, p3, p4),
-            Publishers.Zip4(p5, p6, p7, p8),
-            p9
+        Promise(
+            Publishers.Zip3(
+                Publishers.Zip4(p1, p2, p3, p4),
+                Publishers.Zip4(p5, p6, p7, p8),
+                p9
+            )
+            .map { tuple -> Output in
+                map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1, tuple.1.2, tuple.1.3, tuple.2)
+            }
         )
-        .map { tuple -> Output in
-            map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1, tuple.1.2, tuple.1.3, tuple.2)
-        }
-        .promise
     }
 
     /// Zips ten promises in a promise. The upstream results will be merged with the provided map function.
@@ -275,15 +283,16 @@ extension Promise {
         _ p10: Promise<P10, Failure>,
         map: @escaping (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10) -> Output
     ) -> Promise<Output, Failure> {
-        Publishers.Zip3(
-            Publishers.Zip4(p1, p2, p3, p4),
-            Publishers.Zip4(p5, p6, p7, p8),
-            Publishers.Zip(p9, p10)
+        Promise(
+            Publishers.Zip3(
+                Publishers.Zip4(p1, p2, p3, p4),
+                Publishers.Zip4(p5, p6, p7, p8),
+                Publishers.Zip(p9, p10)
+            )
+            .map { tuple -> Output in
+                map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1, tuple.1.2, tuple.1.3, tuple.2.0, tuple.2.1)
+            }
         )
-        .map { tuple -> Output in
-            map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1, tuple.1.2, tuple.1.3, tuple.2.0, tuple.2.1)
-        }
-        .promise
     }
 
     /// Zips eleven promises in a promise. The upstream results will be merged with the provided map function.
@@ -318,15 +327,16 @@ extension Promise {
         _ p11: Promise<P11, Failure>,
         map: @escaping (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11) -> Output
     ) -> Promise<Output, Failure> {
-        Publishers.Zip3(
-            Publishers.Zip4(p1, p2, p3, p4),
-            Publishers.Zip4(p5, p6, p7, p8),
-            Publishers.Zip3(p9, p10, p11)
+        Promise(
+            Publishers.Zip3(
+                Publishers.Zip4(p1, p2, p3, p4),
+                Publishers.Zip4(p5, p6, p7, p8),
+                Publishers.Zip3(p9, p10, p11)
+            )
+            .map { tuple -> Output in
+                map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1, tuple.1.2, tuple.1.3, tuple.2.0, tuple.2.1, tuple.2.2)
+            }
         )
-        .map { tuple -> Output in
-            map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1, tuple.1.2, tuple.1.3, tuple.2.0, tuple.2.1, tuple.2.2)
-        }
-        .promise
     }
 
     /// Zips twelve promises in a promise. The upstream results will be merged with the provided map function.
@@ -363,15 +373,16 @@ extension Promise {
         _ p12: Promise<P12, Failure>,
         map: @escaping (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12) -> Output
     ) -> Promise<Output, Failure> {
-        Publishers.Zip3(
-            Publishers.Zip4(p1, p2, p3, p4),
-            Publishers.Zip4(p5, p6, p7, p8),
-            Publishers.Zip4(p9, p10, p11, p12)
+        Promise(
+            Publishers.Zip3(
+                Publishers.Zip4(p1, p2, p3, p4),
+                Publishers.Zip4(p5, p6, p7, p8),
+                Publishers.Zip4(p9, p10, p11, p12)
+            )
+            .map { tuple -> Output in
+                map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1, tuple.1.2, tuple.1.3, tuple.2.0, tuple.2.1, tuple.2.2, tuple.2.3)
+            }
         )
-        .map { tuple -> Output in
-            map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1, tuple.1.2, tuple.1.3, tuple.2.0, tuple.2.1, tuple.2.2, tuple.2.3)
-        }
-        .promise
     }
 }
 #endif
