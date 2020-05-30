@@ -8,6 +8,7 @@
 
 #if canImport(Combine)
 import Combine
+import class Foundation.NSRecursiveLock
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 /// A Promise is a Publisher that lives in between First and Deferred.
@@ -68,6 +69,8 @@ public struct Promise<Success, Failure: Error>: Publisher {
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Promise {
     class Subscription<Downstream: Subscriber>: Combine.Subscription where Output == Downstream.Input, Failure == Downstream.Failure {
+        private let lock = NSRecursiveLock()
+        private var hasStarted = false
         private let upstream: () -> AnyPublisher<Success, Failure>
         private let downstream: Downstream
         private var cancellable: AnyCancellable?
@@ -79,6 +82,13 @@ extension Promise {
 
         func request(_ demand: Subscribers.Demand) {
             guard demand > .none else { return }
+
+            lock.lock()
+            let shouldRun = !hasStarted
+            hasStarted = true
+            lock.unlock()
+
+            guard shouldRun else { return }
 
             cancellable = upstream()
                 .first()
