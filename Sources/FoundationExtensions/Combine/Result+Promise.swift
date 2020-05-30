@@ -22,8 +22,8 @@ extension Result {
     /// if the effect had already started.
     /// This property will create a Promise that, upon subscription and `demand > .none` will emit success or failure, depending
     /// on this `Result` instance.
-    public var promise: Promise<Success, Failure> {
-        Promise(result: self)
+    public var promise: Publishers.Promise<Success, Failure> {
+        Publishers.Promise(result: self)
     }
 }
 #endif

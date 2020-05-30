@@ -10,7 +10,7 @@
 import Combine
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-extension Promise {
+extension Publishers.Promise {
     /// Zips two promises in a promise. The upstream results will be merged with the provided map function.
     /// This is useful for calling async operations in parallel, creating a race that waits for the slowest
     /// one, so all of them will complete, be mapped and then forwarded to the downstream.
@@ -21,11 +21,11 @@ extension Promise {
     /// - Returns: a new promise that will complete when all upstreams gave their results and the were
     ///            mapped into the downstream output
     public static func zip<P1, P2>(
-        _ p1: Promise<P1, Failure>,
-        _ p2: Promise<P2, Failure>,
+        _ p1: Publishers.Promise<P1, Failure>,
+        _ p2: Publishers.Promise<P2, Failure>,
         map: @escaping (P1, P2) -> Output
-    ) -> Promise<Output, Failure> {
-        Promise(
+    ) -> Publishers.Promise<Output, Failure> {
+        Publishers.Promise(
             Publishers.Zip(p1, p2)
                 .map(map)
         )
@@ -42,12 +42,12 @@ extension Promise {
     /// - Returns: a new promise that will complete when all upstreams gave their results and the were
     ///            mapped into the downstream output
     public static func zip<P1, P2, P3>(
-        _ p1: Promise<P1, Failure>,
-        _ p2: Promise<P2, Failure>,
-        _ p3: Promise<P3, Failure>,
+        _ p1: Publishers.Promise<P1, Failure>,
+        _ p2: Publishers.Promise<P2, Failure>,
+        _ p3: Publishers.Promise<P3, Failure>,
         map: @escaping (P1, P2, P3) -> Output
-    ) -> Promise<Output, Failure> {
-        Promise(
+    ) -> Publishers.Promise<Output, Failure> {
+        Publishers.Promise(
             Publishers.Zip3(p1, p2, p3)
                 .map(map)
         )
@@ -65,13 +65,13 @@ extension Promise {
     /// - Returns: a new promise that will complete when all upstreams gave their results and the were
     ///            mapped into the downstream output
     public static func zip<P1, P2, P3, P4>(
-        _ p1: Promise<P1, Failure>,
-        _ p2: Promise<P2, Failure>,
-        _ p3: Promise<P3, Failure>,
-        _ p4: Promise<P4, Failure>,
+        _ p1: Publishers.Promise<P1, Failure>,
+        _ p2: Publishers.Promise<P2, Failure>,
+        _ p3: Publishers.Promise<P3, Failure>,
+        _ p4: Publishers.Promise<P4, Failure>,
         map: @escaping (P1, P2, P3, P4) -> Output
-    ) -> Promise<Output, Failure> {
-        Promise(
+    ) -> Publishers.Promise<Output, Failure> {
+        Publishers.Promise(
             Publishers.Zip4(p1, p2, p3, p4)
                 .map(map)
         )
@@ -90,14 +90,14 @@ extension Promise {
     /// - Returns: a new promise that will complete when all upstreams gave their results and the were
     ///            mapped into the downstream output
     public static func zip<P1, P2, P3, P4, P5>(
-        _ p1: Promise<P1, Failure>,
-        _ p2: Promise<P2, Failure>,
-        _ p3: Promise<P3, Failure>,
-        _ p4: Promise<P4, Failure>,
-        _ p5: Promise<P5, Failure>,
+        _ p1: Publishers.Promise<P1, Failure>,
+        _ p2: Publishers.Promise<P2, Failure>,
+        _ p3: Publishers.Promise<P3, Failure>,
+        _ p4: Publishers.Promise<P4, Failure>,
+        _ p5: Publishers.Promise<P5, Failure>,
         map: @escaping (P1, P2, P3, P4, P5) -> Output
-    ) -> Promise<Output, Failure> {
-        Promise(
+    ) -> Publishers.Promise<Output, Failure> {
+        Publishers.Promise(
             Publishers.Zip(
                 Publishers.Zip4(p1, p2, p3, p4),
                 p5
@@ -122,15 +122,15 @@ extension Promise {
     /// - Returns: a new promise that will complete when all upstreams gave their results and the were
     ///            mapped into the downstream output
     public static func zip<P1, P2, P3, P4, P5, P6>(
-        _ p1: Promise<P1, Failure>,
-        _ p2: Promise<P2, Failure>,
-        _ p3: Promise<P3, Failure>,
-        _ p4: Promise<P4, Failure>,
-        _ p5: Promise<P5, Failure>,
-        _ p6: Promise<P6, Failure>,
+        _ p1: Publishers.Promise<P1, Failure>,
+        _ p2: Publishers.Promise<P2, Failure>,
+        _ p3: Publishers.Promise<P3, Failure>,
+        _ p4: Publishers.Promise<P4, Failure>,
+        _ p5: Publishers.Promise<P5, Failure>,
+        _ p6: Publishers.Promise<P6, Failure>,
         map: @escaping (P1, P2, P3, P4, P5, P6) -> Output
-    ) -> Promise<Output, Failure> {
-        Promise(
+    ) -> Publishers.Promise<Output, Failure> {
+        Publishers.Promise(
             Publishers.Zip(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip(p5, p6)
@@ -156,16 +156,16 @@ extension Promise {
     /// - Returns: a new promise that will complete when all upstreams gave their results and the were
     ///            mapped into the downstream output
     public static func zip<P1, P2, P3, P4, P5, P6, P7>(
-        _ p1: Promise<P1, Failure>,
-        _ p2: Promise<P2, Failure>,
-        _ p3: Promise<P3, Failure>,
-        _ p4: Promise<P4, Failure>,
-        _ p5: Promise<P5, Failure>,
-        _ p6: Promise<P6, Failure>,
-        _ p7: Promise<P7, Failure>,
+        _ p1: Publishers.Promise<P1, Failure>,
+        _ p2: Publishers.Promise<P2, Failure>,
+        _ p3: Publishers.Promise<P3, Failure>,
+        _ p4: Publishers.Promise<P4, Failure>,
+        _ p5: Publishers.Promise<P5, Failure>,
+        _ p6: Publishers.Promise<P6, Failure>,
+        _ p7: Publishers.Promise<P7, Failure>,
         map: @escaping (P1, P2, P3, P4, P5, P6, P7) -> Output
-    ) -> Promise<Output, Failure> {
-        Promise(
+    ) -> Publishers.Promise<Output, Failure> {
+        Publishers.Promise(
             Publishers.Zip(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip3(p5, p6, p7)
@@ -192,17 +192,17 @@ extension Promise {
     /// - Returns: a new promise that will complete when all upstreams gave their results and the were
     ///            mapped into the downstream output
     public static func zip<P1, P2, P3, P4, P5, P6, P7, P8>(
-        _ p1: Promise<P1, Failure>,
-        _ p2: Promise<P2, Failure>,
-        _ p3: Promise<P3, Failure>,
-        _ p4: Promise<P4, Failure>,
-        _ p5: Promise<P5, Failure>,
-        _ p6: Promise<P6, Failure>,
-        _ p7: Promise<P7, Failure>,
-        _ p8: Promise<P8, Failure>,
+        _ p1: Publishers.Promise<P1, Failure>,
+        _ p2: Publishers.Promise<P2, Failure>,
+        _ p3: Publishers.Promise<P3, Failure>,
+        _ p4: Publishers.Promise<P4, Failure>,
+        _ p5: Publishers.Promise<P5, Failure>,
+        _ p6: Publishers.Promise<P6, Failure>,
+        _ p7: Publishers.Promise<P7, Failure>,
+        _ p8: Publishers.Promise<P8, Failure>,
         map: @escaping (P1, P2, P3, P4, P5, P6, P7, P8) -> Output
-    ) -> Promise<Output, Failure> {
-        Promise(
+    ) -> Publishers.Promise<Output, Failure> {
+        Publishers.Promise(
             Publishers.Zip(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip4(p5, p6, p7, p8)
@@ -230,18 +230,18 @@ extension Promise {
     /// - Returns: a new promise that will complete when all upstreams gave their results and the were
     ///            mapped into the downstream output
     public static func zip<P1, P2, P3, P4, P5, P6, P7, P8, P9>(
-        _ p1: Promise<P1, Failure>,
-        _ p2: Promise<P2, Failure>,
-        _ p3: Promise<P3, Failure>,
-        _ p4: Promise<P4, Failure>,
-        _ p5: Promise<P5, Failure>,
-        _ p6: Promise<P6, Failure>,
-        _ p7: Promise<P7, Failure>,
-        _ p8: Promise<P8, Failure>,
-        _ p9: Promise<P9, Failure>,
+        _ p1: Publishers.Promise<P1, Failure>,
+        _ p2: Publishers.Promise<P2, Failure>,
+        _ p3: Publishers.Promise<P3, Failure>,
+        _ p4: Publishers.Promise<P4, Failure>,
+        _ p5: Publishers.Promise<P5, Failure>,
+        _ p6: Publishers.Promise<P6, Failure>,
+        _ p7: Publishers.Promise<P7, Failure>,
+        _ p8: Publishers.Promise<P8, Failure>,
+        _ p9: Publishers.Promise<P9, Failure>,
         map: @escaping (P1, P2, P3, P4, P5, P6, P7, P8, P9) -> Output
-    ) -> Promise<Output, Failure> {
-        Promise(
+    ) -> Publishers.Promise<Output, Failure> {
+        Publishers.Promise(
             Publishers.Zip3(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip4(p5, p6, p7, p8),
@@ -271,19 +271,19 @@ extension Promise {
     /// - Returns: a new promise that will complete when all upstreams gave their results and the were
     ///            mapped into the downstream output
     public static func zip<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10>(
-        _ p1: Promise<P1, Failure>,
-        _ p2: Promise<P2, Failure>,
-        _ p3: Promise<P3, Failure>,
-        _ p4: Promise<P4, Failure>,
-        _ p5: Promise<P5, Failure>,
-        _ p6: Promise<P6, Failure>,
-        _ p7: Promise<P7, Failure>,
-        _ p8: Promise<P8, Failure>,
-        _ p9: Promise<P9, Failure>,
-        _ p10: Promise<P10, Failure>,
+        _ p1: Publishers.Promise<P1, Failure>,
+        _ p2: Publishers.Promise<P2, Failure>,
+        _ p3: Publishers.Promise<P3, Failure>,
+        _ p4: Publishers.Promise<P4, Failure>,
+        _ p5: Publishers.Promise<P5, Failure>,
+        _ p6: Publishers.Promise<P6, Failure>,
+        _ p7: Publishers.Promise<P7, Failure>,
+        _ p8: Publishers.Promise<P8, Failure>,
+        _ p9: Publishers.Promise<P9, Failure>,
+        _ p10: Publishers.Promise<P10, Failure>,
         map: @escaping (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10) -> Output
-    ) -> Promise<Output, Failure> {
-        Promise(
+    ) -> Publishers.Promise<Output, Failure> {
+        Publishers.Promise(
             Publishers.Zip3(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip4(p5, p6, p7, p8),
@@ -314,20 +314,20 @@ extension Promise {
     /// - Returns: a new promise that will complete when all upstreams gave their results and the were
     ///            mapped into the downstream output
     public static func zip<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11>(
-        _ p1: Promise<P1, Failure>,
-        _ p2: Promise<P2, Failure>,
-        _ p3: Promise<P3, Failure>,
-        _ p4: Promise<P4, Failure>,
-        _ p5: Promise<P5, Failure>,
-        _ p6: Promise<P6, Failure>,
-        _ p7: Promise<P7, Failure>,
-        _ p8: Promise<P8, Failure>,
-        _ p9: Promise<P9, Failure>,
-        _ p10: Promise<P10, Failure>,
-        _ p11: Promise<P11, Failure>,
+        _ p1: Publishers.Promise<P1, Failure>,
+        _ p2: Publishers.Promise<P2, Failure>,
+        _ p3: Publishers.Promise<P3, Failure>,
+        _ p4: Publishers.Promise<P4, Failure>,
+        _ p5: Publishers.Promise<P5, Failure>,
+        _ p6: Publishers.Promise<P6, Failure>,
+        _ p7: Publishers.Promise<P7, Failure>,
+        _ p8: Publishers.Promise<P8, Failure>,
+        _ p9: Publishers.Promise<P9, Failure>,
+        _ p10: Publishers.Promise<P10, Failure>,
+        _ p11: Publishers.Promise<P11, Failure>,
         map: @escaping (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11) -> Output
-    ) -> Promise<Output, Failure> {
-        Promise(
+    ) -> Publishers.Promise<Output, Failure> {
+        Publishers.Promise(
             Publishers.Zip3(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip4(p5, p6, p7, p8),
@@ -359,21 +359,21 @@ extension Promise {
     /// - Returns: a new promise that will complete when all upstreams gave their results and the were
     ///            mapped into the downstream output
     public static func zip<P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12>(
-        _ p1: Promise<P1, Failure>,
-        _ p2: Promise<P2, Failure>,
-        _ p3: Promise<P3, Failure>,
-        _ p4: Promise<P4, Failure>,
-        _ p5: Promise<P5, Failure>,
-        _ p6: Promise<P6, Failure>,
-        _ p7: Promise<P7, Failure>,
-        _ p8: Promise<P8, Failure>,
-        _ p9: Promise<P9, Failure>,
-        _ p10: Promise<P10, Failure>,
-        _ p11: Promise<P11, Failure>,
-        _ p12: Promise<P12, Failure>,
+        _ p1: Publishers.Promise<P1, Failure>,
+        _ p2: Publishers.Promise<P2, Failure>,
+        _ p3: Publishers.Promise<P3, Failure>,
+        _ p4: Publishers.Promise<P4, Failure>,
+        _ p5: Publishers.Promise<P5, Failure>,
+        _ p6: Publishers.Promise<P6, Failure>,
+        _ p7: Publishers.Promise<P7, Failure>,
+        _ p8: Publishers.Promise<P8, Failure>,
+        _ p9: Publishers.Promise<P9, Failure>,
+        _ p10: Publishers.Promise<P10, Failure>,
+        _ p11: Publishers.Promise<P11, Failure>,
+        _ p12: Publishers.Promise<P12, Failure>,
         map: @escaping (P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12) -> Output
-    ) -> Promise<Output, Failure> {
-        Promise(
+    ) -> Publishers.Promise<Output, Failure> {
+        Publishers.Promise(
             Publishers.Zip3(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip4(p5, p6, p7, p8),

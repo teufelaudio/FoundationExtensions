@@ -21,8 +21,8 @@ extension Publisher {
     /// behaviour, then, will be similar to `Deferred<Future<Output, Failure>>`, however with some extra features such as better
     /// zips, and a run function to easily start the effect. The cancellation is possible and will be forwarded to the upstream
     /// if the effect had already started.
-    public var promise: Promise<Output, Failure> {
-        Promise(self)
+    public var promise: Publishers.Promise<Output, Failure> {
+        Publishers.Promise(self)
     }
 }
 #endif
