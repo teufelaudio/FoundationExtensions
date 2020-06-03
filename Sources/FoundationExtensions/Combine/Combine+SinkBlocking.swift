@@ -1,5 +1,5 @@
 //
-//  Publisher+FlatMapResult.swift
+//  Combine+SinkBlocking.swift
 //  FoundationExtensions
 //
 //  Created by Luiz Barbosa on 03.06.20.
@@ -23,7 +23,7 @@ extension Publisher {
     @available(tvOS, unavailable)
     @available(watchOS, unavailable)
     @discardableResult
-    public func runBlockingAndExit(
+    public func sinkBlockingAndExit(
         receiveCompletion: @escaping (Subscribers.Completion<Failure>) -> Void,
         receiveValue: @escaping (Output) -> Void
     ) -> AnyCancellable {

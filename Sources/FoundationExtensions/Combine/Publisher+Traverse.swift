@@ -1,5 +1,5 @@
 //
-//  DeferredType+Traverse.swift
+//  Publisher+Traverse.swift
 //  FoundationExtensions
 //
 //  Created by Luiz Barbosa on 14.12.18.

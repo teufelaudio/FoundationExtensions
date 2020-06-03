@@ -1,5 +1,5 @@
 //
-//  Publisher+Promise.swift
+//  Publisher+PromiseConvertibleType.swift
 //  FoundationExtensions
 //
 //  Created by Luiz Barbosa on 29.05.20.

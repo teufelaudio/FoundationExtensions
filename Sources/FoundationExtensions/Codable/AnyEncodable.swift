@@ -1,6 +1,6 @@
 //
 //  AnyEncodable.swift
-//  RFFoundation
+//  FoundationExtensions
 //
 //  Created by Luiz Barbosa on 18.07.18.
 //  Copyright © 2018 Lautsprecher Teufel GmbH. All rights reserved.

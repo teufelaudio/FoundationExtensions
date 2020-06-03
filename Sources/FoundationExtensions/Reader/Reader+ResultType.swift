@@ -9,11 +9,13 @@
 import Foundation
 
 extension Reader where Value: ResultType {
-    public func mapResult<NewSuccess>(_ transform: @escaping (Value.Success) -> NewSuccess) -> Reader<Environment, Result<NewSuccess, Value.Failure>> {
+    public func mapResult<NewSuccess>(_ transform: @escaping (Value.Success)
+    -> NewSuccess) -> Reader<Environment, Result<NewSuccess, Value.Failure>> {
         mapValue { $0.map(transform) }
     }
 
-    public func mapResultError<NewFailure>(_ transform: @escaping (Value.Failure) -> NewFailure) -> Reader<Environment, Result<Value.Success, NewFailure>> {
+    public func mapResultError<NewFailure>(_ transform: @escaping (Value.Failure) -> NewFailure)
+    -> Reader<Environment, Result<Value.Success, NewFailure>> {
         mapValue { $0.mapError(transform) }
     }
 

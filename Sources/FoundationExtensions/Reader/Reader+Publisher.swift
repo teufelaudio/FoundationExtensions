@@ -11,11 +11,13 @@ import Combine
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Reader where Value: Publisher {
-    public func mapPublisher<NewOutput>(_ transform: @escaping (Value.Output) -> NewOutput) -> Reader<Environment, AnyPublisher<NewOutput, Value.Failure>> {
+    public func mapPublisher<NewOutput>(_ transform: @escaping (Value.Output) -> NewOutput)
+    -> Reader<Environment, AnyPublisher<NewOutput, Value.Failure>> {
         mapValue { $0.map(transform).eraseToAnyPublisher() }
     }
 
-    public func mapPublisherError<NewFailure>(_ transform: @escaping (Value.Failure) -> NewFailure) -> Reader<Environment, AnyPublisher<Value.Output, NewFailure>> {
+    public func mapPublisherError<NewFailure>(_ transform: @escaping (Value.Failure) -> NewFailure)
+    -> Reader<Environment, AnyPublisher<Value.Output, NewFailure>> {
         mapValue { $0.mapError(transform).eraseToAnyPublisher() }
     }
 

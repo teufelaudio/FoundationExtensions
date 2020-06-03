@@ -42,7 +42,7 @@ file_header:
   required_pattern: |
                     \/\/
                     \/\/  SWIFTLINT_CURRENT_FILENAME
-                    \/\/.*
+                    \/\/  FoundationExtensions(Tests)?
                     \/\/
                     \/\/  Created by .* on \d{1,2}\.\d{1,2}\.\d{2,4}\.
                     \/\/  Copyright © \d{4} (Lautsprecher Teufel GmbH|Zendesk)\. All rights reserved\.
@@ -51,6 +51,7 @@ disabled_rules:
   # - block_based_kvo
   # - trailing_whitespace
   # - force_cast
+  - function_parameter_count
   - todo
   - large_tuple
   - multiple_closures_with_trailing_closure # does not play well with SwiftUI

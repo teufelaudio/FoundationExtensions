@@ -2,7 +2,7 @@
 //  DispatchTimeInterval+Codable.swift
 //  FoundationExtensions
 //
-//  Created by Luiz Rodrigo Martins Barbosa on 30.04.20.
+//  Created by Luiz Barbosa on 30.04.20.
 //  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
 //
 

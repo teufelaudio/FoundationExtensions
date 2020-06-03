@@ -1,6 +1,6 @@
 //
 //  DistributionEnvironment.swift
-//  TeufelBluetooth
+//  FoundationExtensions
 //
 //  Created by Luiz Barbosa on 27.01.20.
 //  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
@@ -27,7 +27,7 @@ public enum DistributionEnvironment: String {
 
     public static var current: DistributionEnvironment {
         // We are passing the launch argument `-TESTING` when running
-        // the TeufelBluetoothTests.
+        // the Tests.
         #if DEBUG
         if ProcessInfo.processInfo.arguments.contains("-TESTING") {
             return .runningTests
