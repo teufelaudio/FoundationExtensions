@@ -17,12 +17,12 @@ extension Publisher {
     /// It will hang until an event arrives from this upstream.
     /// Calling it from `promise` property on the instance, means that this publisher was already created and can't be deferred
     /// anymore. If you want to profit from lazy evaluation of Promise it's recommended to use the `Promise.init(Publisher)`,
-    /// that autoclosures the publisher and makes it lazy until the downstream sends demand (`.demand > .none`).
+    /// that uses a closures to create the publisher and makes it lazy until the downstream sends demand (`.demand > .none`).
     /// That way, you can safely add `Future` as upstream, for example, and be sure that its side-effect won't be started. The
     /// behaviour, then, will be similar to `Deferred<Future<Output, Failure>>`, however with some extra features such as better
     /// zips, and a run function to easily start the effect. The cancellation is possible and will be forwarded to the upstream
     /// if the effect had already started.
     public var promise: Publishers.Promise<Output, Failure> {
-        Publishers.Promise(self)
+        Publishers.Promise { self }
     }
 }#endif

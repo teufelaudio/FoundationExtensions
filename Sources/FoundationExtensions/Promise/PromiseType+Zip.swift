@@ -25,10 +25,10 @@ extension PromiseType {
         _ p2: P2,
         map: @escaping (P1.Output, P2.Output) -> Output
     ) -> Publishers.Promise<Output, Failure> where P1.Failure == Failure, P2.Failure == Failure {
-        Publishers.Promise(
+        Publishers.Promise {
             Publishers.Zip(p1, p2)
                 .map(map)
-        )
+        }
     }
 
     /// Zips three promises in a promise. The upstream results will be merged with the provided map function.
@@ -47,10 +47,10 @@ extension PromiseType {
         _ p3: P3,
         map: @escaping (P1.Output, P2.Output, P3.Output) -> Output
     ) -> Publishers.Promise<Output, Failure> where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure {
-        Publishers.Promise(
+        Publishers.Promise {
             Publishers.Zip3(p1, p2, p3)
                 .map(map)
-        )
+        }
     }
 
     /// Zips four promises in a promise. The upstream results will be merged with the provided map function.
@@ -71,10 +71,10 @@ extension PromiseType {
         _ p4: P4,
         map: @escaping (P1.Output, P2.Output, P3.Output, P4.Output) -> Output
     ) -> Publishers.Promise<Output, Failure> where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure, P4.Failure == Failure {
-        Publishers.Promise(
+        Publishers.Promise {
             Publishers.Zip4(p1, p2, p3, p4)
                 .map(map)
-        )
+        }
     }
 
     /// Zips five promises in a promise. The upstream results will be merged with the provided map function.
@@ -98,7 +98,7 @@ extension PromiseType {
         map: @escaping (P1.Output, P2.Output, P3.Output, P4.Output, P5.Output) -> Output
     ) -> Publishers.Promise<Output, Failure> where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure, P4.Failure == Failure,
                                                    P5.Failure == Failure {
-        Publishers.Promise(
+        Publishers.Promise {
             Publishers.Zip(
                 Publishers.Zip4(p1, p2, p3, p4),
                 p5
@@ -106,7 +106,7 @@ extension PromiseType {
             .map { tuple -> Output in
                 map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1)
             }
-        )
+        }
     }
 
     /// Zips six promises in a promise. The upstream results will be merged with the provided map function.
@@ -132,7 +132,7 @@ extension PromiseType {
         map: @escaping (P1.Output, P2.Output, P3.Output, P4.Output, P5.Output, P6.Output) -> Output
     ) -> Publishers.Promise<Output, Failure> where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure, P4.Failure == Failure,
                                                    P5.Failure == Failure, P6.Failure == Failure {
-        Publishers.Promise(
+        Publishers.Promise {
             Publishers.Zip(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip(p5, p6)
@@ -140,7 +140,7 @@ extension PromiseType {
             .map { tuple -> Output in
                 map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1)
             }
-        )
+        }
     }
 
     /// Zips seven promises in a promise. The upstream results will be merged with the provided map function.
@@ -168,7 +168,7 @@ extension PromiseType {
         map: @escaping (P1.Output, P2.Output, P3.Output, P4.Output, P5.Output, P6.Output, P7.Output) -> Output
     ) -> Publishers.Promise<Output, Failure> where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure, P4.Failure == Failure,
                                                    P5.Failure == Failure, P6.Failure == Failure, P7.Failure == Failure {
-        Publishers.Promise(
+        Publishers.Promise {
             Publishers.Zip(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip3(p5, p6, p7)
@@ -176,7 +176,7 @@ extension PromiseType {
             .map { tuple -> Output in
                 map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1, tuple.1.2)
             }
-        )
+        }
     }
 
     /// Zips eight promises in a promise. The upstream results will be merged with the provided map function.
@@ -207,7 +207,7 @@ extension PromiseType {
         map: @escaping (P1.Output, P2.Output, P3.Output, P4.Output, P5.Output, P6.Output, P7.Output, P8.Output) -> Output
     ) -> Publishers.Promise<Output, Failure> where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure, P4.Failure == Failure,
                                                    P5.Failure == Failure, P6.Failure == Failure, P7.Failure == Failure, P8.Failure == Failure {
-        Publishers.Promise(
+        Publishers.Promise {
             Publishers.Zip(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip4(p5, p6, p7, p8)
@@ -215,7 +215,7 @@ extension PromiseType {
             .map { tuple -> Output in
                 map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1, tuple.1.2, tuple.1.3)
             }
-        )
+        }
     }
 
     /// Zips nine promises in a promise. The upstream results will be merged with the provided map function.
@@ -249,7 +249,7 @@ extension PromiseType {
     ) -> Publishers.Promise<Output, Failure> where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure, P4.Failure == Failure,
                                                    P5.Failure == Failure, P6.Failure == Failure, P7.Failure == Failure, P8.Failure == Failure,
                                                    P9.Failure == Failure {
-        Publishers.Promise(
+        Publishers.Promise {
             Publishers.Zip3(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip4(p5, p6, p7, p8),
@@ -258,7 +258,7 @@ extension PromiseType {
             .map { tuple -> Output in
                 map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1, tuple.1.2, tuple.1.3, tuple.2)
             }
-        )
+        }
     }
 
     /// Zips ten promises in a promise. The upstream results will be merged with the provided map function.
@@ -294,7 +294,7 @@ extension PromiseType {
     ) -> Publishers.Promise<Output, Failure> where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure, P4.Failure == Failure,
                                                    P5.Failure == Failure, P6.Failure == Failure, P7.Failure == Failure, P8.Failure == Failure,
                                                    P9.Failure == Failure, P10.Failure == Failure {
-        Publishers.Promise(
+        Publishers.Promise {
             Publishers.Zip3(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip4(p5, p6, p7, p8),
@@ -303,7 +303,7 @@ extension PromiseType {
             .map { tuple -> Output in
                 map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1, tuple.1.2, tuple.1.3, tuple.2.0, tuple.2.1)
             }
-        )
+        }
     }
 
     /// Zips eleven promises in a promise. The upstream results will be merged with the provided map function.
@@ -342,7 +342,7 @@ extension PromiseType {
     ) -> Publishers.Promise<Output, Failure> where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure, P4.Failure == Failure,
                                                    P5.Failure == Failure, P6.Failure == Failure, P7.Failure == Failure, P8.Failure == Failure,
                                                    P9.Failure == Failure, P10.Failure == Failure, P11.Failure == Failure {
-        Publishers.Promise(
+        Publishers.Promise {
             Publishers.Zip3(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip4(p5, p6, p7, p8),
@@ -351,7 +351,7 @@ extension PromiseType {
             .map { tuple -> Output in
                 map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1, tuple.1.2, tuple.1.3, tuple.2.0, tuple.2.1, tuple.2.2)
             }
-        )
+        }
     }
 
     /// Zips twelve promises in a promise. The upstream results will be merged with the provided map function.
@@ -392,7 +392,7 @@ extension PromiseType {
     ) -> Publishers.Promise<Output, Failure> where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure, P4.Failure == Failure,
                                                    P5.Failure == Failure, P6.Failure == Failure, P7.Failure == Failure, P8.Failure == Failure,
                                                    P9.Failure == Failure, P10.Failure == Failure, P11.Failure == Failure, P12.Failure == Failure {
-        Publishers.Promise(
+        Publishers.Promise {
             Publishers.Zip3(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip4(p5, p6, p7, p8),
@@ -402,7 +402,7 @@ extension PromiseType {
                 map(tuple.0.0, tuple.0.1, tuple.0.2, tuple.0.3, tuple.1.0, tuple.1.1, tuple.1.2, tuple.1.3, tuple.2.0, tuple.2.1, tuple.2.2,
                     tuple.2.3)
             }
-        )
+        }
     }
 }
 #endif

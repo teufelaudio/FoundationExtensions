@@ -32,11 +32,10 @@ extension Publishers {
 
         private let upstream: () -> AnyPublisher<Success, Failure>
 
-        /// A promise from an upstream publisher. Because this is an autoclosure parameter, the upstream will become a factory
+        /// A promise from an upstream publisher. Because this is an closure parameter, the upstream will become a factory
         /// and its creation will be deferred until there's some positive demand from the downstream.
-        /// - Parameter upstream: a closure that creates an upstream publisher. This is an autoclosure, so creation will be
-        ///                       deferred.
-        public init<P: Publisher>(_ upstream: @autoclosure @escaping () -> P) where P.Output == Success, P.Failure == Failure {
+        /// - Parameter upstream: a closure that creates an upstream publisher. This is an closure, so creation will be deferred.
+        public init<P: Publisher>(_ upstream: @escaping () -> P) where P.Output == Success, P.Failure == Failure {
             self.upstream = { upstream().eraseToAnyPublisher() }
         }
 
