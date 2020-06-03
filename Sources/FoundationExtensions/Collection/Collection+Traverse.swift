@@ -86,6 +86,14 @@ extension Collection {
             }
         }
     }
+
+    public func traverse<Environment, A>(_ transform: @escaping (Element) -> Reader<Environment, A>) -> Reader<Environment, [A]> {
+        Reader { env in
+            self.map { value in
+                transform(value).inject(env)
+            }
+        }
+    }
 }
 
 #if canImport(Combine)

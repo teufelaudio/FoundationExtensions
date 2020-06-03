@@ -27,6 +27,15 @@ extension ResultType {
         return fold(onSuccess: { value in transform(value).map(Result<OptionalWrapped, Failure>.success) },
                     onFailure: { error in .failure(error) })
     }
+
+    // Traverse Reader, Result
+    public func traverse<Environment, A>(_ transform: @escaping (Success) -> Reader<Environment, A>) -> Reader<Environment, Result<A, Failure>> {
+        Reader { env in
+            self.map { value in
+                transform(value).inject(env)
+            }
+        }
+    }
 }
 
 #if canImport(Combine)

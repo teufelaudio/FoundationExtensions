@@ -17,5 +17,13 @@ extension Publisher {
     -> AnyPublisher<AnyPublisher<NewOutput, NewFailure>, Failure> {
         map { transform($0) }.eraseToAnyPublisher()
     }
+
+    public func traverse<Environment, A>(_ transform: @escaping (Output) -> Reader<Environment, A>) -> Reader<Environment, AnyPublisher<A, Failure>> {
+        Reader { env in
+            self.map { value in
+                transform(value).inject(env)
+            }.eraseToAnyPublisher()
+        }
+    }
 }
 #endif

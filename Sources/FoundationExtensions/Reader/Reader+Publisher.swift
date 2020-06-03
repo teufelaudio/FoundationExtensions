@@ -34,6 +34,18 @@ extension Reader where Value: Publisher {
         mapValue { $0.flatMap { transform($0) }.eraseToAnyPublisher() }
     }
 
+    public func flatMapPublisher<NewPublisher: Publisher>(
+        _ transform: @escaping (Value.Output) -> Reader<Environment, NewPublisher>
+    ) -> Reader<Environment, AnyPublisher<NewPublisher.Output, NewPublisher.Failure>> where Value: Publisher, Value.Failure == NewPublisher.Failure {
+        flatMap { publisher -> Reader<Environment, AnyPublisher<NewPublisher.Output, NewPublisher.Failure>> in
+            Reader<Environment, AnyPublisher<NewPublisher.Output, NewPublisher.Failure>> { env in
+                publisher.flatMap { value -> AnyPublisher<NewPublisher.Output, NewPublisher.Failure> in
+                    transform(value).inject(env).eraseToAnyPublisher()
+                }.eraseToAnyPublisher()
+            }
+        }
+    }
+
     public func flatMapPublisherError<NewPublisher: Publisher>(
         _ transform: @escaping (Value.Failure) -> NewPublisher
     ) -> Reader<Environment, AnyPublisher<Value.Output, NewPublisher.Failure>> where NewPublisher.Output == Value.Output {

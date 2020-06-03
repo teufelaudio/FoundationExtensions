@@ -19,13 +19,21 @@ extension Optional {
     }
 
     public func traverse<A>(_ transform: (Wrapped) -> A?) -> A?? {
-        return map(transform)
+        map(transform)
     }
 
     public func traverse<A, Failure>(_ transform: (Wrapped) -> Result<A, Failure>) -> Result<A?, Failure> {
-        return map { value in
-            return transform(value).map { $0 as A? }
+        map { value in
+            transform(value).map { $0 as A? }
         } ?? .success(nil)
+    }
+
+    public func traverse<Environment, A>(_ transform: @escaping (Wrapped) -> Reader<Environment, A>) -> Reader<Environment, A?> {
+        Reader { env in
+            self.map { value in
+                transform(value).inject(env)
+            }
+        }
     }
 }
 

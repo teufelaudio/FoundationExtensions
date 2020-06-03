@@ -32,6 +32,18 @@ extension Reader where Value: ResultType {
         mapValue { $0.flatMap { transform($0).asResult() } }
     }
 
+    public func flatMapResult<NewResult: ResultType>(
+        _ transform: @escaping (Value.Success) -> Reader<Environment, NewResult>
+    ) -> Reader<Environment, Result<NewResult.Success, NewResult.Failure>> where Value: ResultType, Value.Failure == NewResult.Failure {
+        flatMap { result -> Reader<Environment, Result<NewResult.Success, NewResult.Failure>> in
+            Reader<Environment, Result<NewResult.Success, NewResult.Failure>> { env in
+                result.flatMap { value -> Result<NewResult.Success, NewResult.Failure> in
+                    transform(value).inject(env).asResult()
+                }
+            }
+        }
+    }
+
     public func flatMapResultError<NewResult: ResultType>(
         _ transform: @escaping (Value.Failure) -> NewResult
     ) -> Reader<Environment, Result<Value.Success, NewResult.Failure>> where NewResult.Success == Value.Success {
