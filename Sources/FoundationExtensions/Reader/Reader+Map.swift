@@ -65,7 +65,7 @@ extension Reader {
         _ first: @escaping (E2) -> First,
         _ second: @escaping (E2) -> Second)
         -> Reader<E2, Value> where Environment == (First, Second) {
-            return contramapEnvironment { zip(first, second)($0) }
+            return contramapEnvironment { Function.zip(first, second)($0) }
     }
 
     public func contramapEnvironment<E2, First, Second, Third>(
@@ -73,7 +73,7 @@ extension Reader {
         _ second: @escaping (E2) -> Second,
         _ third: @escaping (E2) -> Third)
         -> Reader<E2, Value> where Environment == (First, Second, Third) {
-            return contramapEnvironment { zip(first, second, third)($0) }
+            return contramapEnvironment { Function.zip(first, second, third)($0) }
     }
 
     public func contramapEnvironment<E2, First, Second, Third, Fourth>(
@@ -82,7 +82,7 @@ extension Reader {
         _ third: @escaping (E2) -> Third,
         _ fourth: @escaping (E2) -> Fourth)
         -> Reader<E2, Value> where Environment == (First, Second, Third, Fourth) {
-            return contramapEnvironment { zip(first, second, third, fourth)($0) }
+            return contramapEnvironment { Function.zip(first, second, third, fourth)($0) }
     }
 
     public func contramapEnvironment<E2, First, Second, Third, Fourth, Fifth>(
@@ -92,6 +92,17 @@ extension Reader {
         _ fourth: @escaping (E2) -> Fourth,
         _ fifth: @escaping (E2) -> Fifth)
         -> Reader<E2, Value> where Environment == (First, Second, Third, Fourth, Fifth) {
-            return contramapEnvironment { zip(first, second, third, fourth, fifth)($0) }
+            return contramapEnvironment { Function.zip(first, second, third, fourth, fifth)($0) }
+    }
+
+    public func contramapEnvironment<E2, First, Second, Third, Fourth, Fifth, Sixth>(
+        _ first: @escaping (E2) -> First,
+        _ second: @escaping (E2) -> Second,
+        _ third: @escaping (E2) -> Third,
+        _ fourth: @escaping (E2) -> Fourth,
+        _ fifth: @escaping (E2) -> Fifth,
+        _ sixth: @escaping (E2) -> Sixth)
+        -> Reader<E2, Value> where Environment == (First, Second, Third, Fourth, Fifth, Sixth) {
+            return contramapEnvironment { Function.zip(first, second, third, fourth, fifth, sixth)($0) }
     }
 }

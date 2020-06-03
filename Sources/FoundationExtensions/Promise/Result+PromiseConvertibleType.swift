@@ -1,5 +1,5 @@
 //
-//  Publisher+Promise.swift
+//  Result+PromiseConvertibleType.swift
 //  FoundationExtensions
 //
 //  Created by Luiz Barbosa on 29.05.20.
@@ -10,19 +10,23 @@
 import Combine
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-extension Publisher {
+extension Result: PromiseConvertibleType {
+    public typealias Output = Success
+    public typealias Failure = Failure
+
     /// A Promise is a Publisher that lives in between First and Deferred.
     /// It will listen to one and only one event, and finish successfully, or finish with error without any successful output.
-    /// It will hang until an event arrives from this upstream.
-    /// Calling it from `promise` property on the instance, means that this publisher was already created and can't be deferred
-    /// anymore. If you want to profit from lazy evaluation of Promise it's recommended to use the `Promise.init(Publisher)`,
-    /// that autoclosures the publisher and makes it lazy until the downstream sends demand (`.demand > .none`).
+    /// It will hang until an event arrives from upstream. If the upstream is eager, it will be deferred, that means it won't
+    /// be created (therefore, no side-effect possible) until the downstream sends demand (`.demand > .none`). This, of course,
+    /// if it was not created yet before passed to this initializer.
     /// That way, you can safely add `Future` as upstream, for example, and be sure that its side-effect won't be started. The
     /// behaviour, then, will be similar to `Deferred<Future<Output, Failure>>`, however with some extra features such as better
     /// zips, and a run function to easily start the effect. The cancellation is possible and will be forwarded to the upstream
     /// if the effect had already started.
-    public var promise: Publishers.Promise<Output, Failure> {
-        Publishers.Promise(self)
+    /// This property will create a Promise that, upon subscription and `demand > .none` will emit success or failure, depending
+    /// on this `Result` instance.
+    public var promise: Publishers.Promise<Success, Failure> {
+        Publishers.Promise(result: self)
     }
 }
 #endif

@@ -6,6 +6,7 @@
 //  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
 //
 
+#if !os(watchOS)
 import XCTest
 
 class StringExtensionsTest: XCTestCase {
@@ -16,3 +17,4 @@ class StringExtensionsTest: XCTestCase {
         XCTAssertEqual("acab", "acab".leftPadding(toLength: 3, withPad: "0")) // no truncation
     }
 }
+#endif

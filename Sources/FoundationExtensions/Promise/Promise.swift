@@ -3,7 +3,7 @@
 //  FoundationExtensions
 //
 //  Created by Luiz Barbosa on 29.05.20.
-//  Copyright © 2018 Lautsprecher Teufel GmbH. All rights reserved.
+//  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
 //
 
 #if canImport(Combine)
@@ -26,9 +26,9 @@ extension Publishers {
     /// hardcoded success or failure values, or from a Result. In any of these cases, the evaluation of the value will be deferred
     /// so be sure to use values with copy semantic (value type).
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    public struct Promise<Success, Failure: Error>: Publisher {
-        /// The kind of values published by this publisher.
+    public struct Promise<Success, Failure: Error>: PromiseType {
         public typealias Output = Success
+        public typealias Failure = Failure
 
         private let upstream: () -> AnyPublisher<Success, Failure>
 
@@ -40,32 +40,18 @@ extension Publishers {
             self.upstream = { upstream().eraseToAnyPublisher() }
         }
 
-        /// A promise from a hardcoded successful value
-        /// - Parameter value: a hardcoded successful value. It's gonna be evaluated on demand from downstream
-        public init(value: Success) {
-            self.upstream = { Just(value).mapError(absurd).eraseToAnyPublisher() }
-        }
-
-        /// A promise from a hardcoded error
-        /// - Parameter error: a hardcoded error. It's gonna be evaluated on demand from downstream
-        public init(error: Failure) {
-            self.upstream = { Fail(error: error).map(absurd).eraseToAnyPublisher() }
-        }
-
-        /// A promise from a hardcoded result value
-        /// - Parameter value: a hardcoded result value. It's gonna be evaluated on demand from downstream
-        public init(result: Result<Output, Failure>) {
-            self.upstream = { result.publisher.eraseToAnyPublisher() }
-        }
-
         /// This function is called to attach the specified `Subscriber` to this `Publisher` by `subscribe(_:)`
         ///
         /// - SeeAlso: `subscribe(_:)`
         /// - Parameters:
         ///     - subscriber: The subscriber to attach to this `Publisher`.
         ///                   once attached it can begin to receive values.
-        public func receive<S>(subscriber: S) where S: Subscriber, Failure == S.Failure, Output == S.Input {
+        public func receive<S>(subscriber: S) where S: Subscriber, Failure == S.Failure, Success == S.Input {
             subscriber.receive(subscription: Subscription.init(upstream: upstream, downstream: subscriber))
+        }
+
+        public func asPromise() -> Publishers.Promise<Success, Failure> {
+            self
         }
     }
 }
@@ -110,64 +96,6 @@ extension Publishers.Promise {
         func cancel() {
             cancellable?.cancel()
         }
-    }
-}
-
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-extension Publishers.Promise {
-    /// Similar to .sink, but with correct semantic for a single-value success or a failure. Creates demand for 1
-    /// value and completes after it, or on error.
-    /// - Parameters:
-    ///   - onSuccess: called when the promise is fulfilled successful with a value. Called only once and then
-    ///                you can consider this stream finished
-    ///   - onFailure: called when the promise finds error. Called only once completing the stream. It's never
-    ///                called if a success was already called
-    /// - Returns: the subscription that can be cancelled at any point.
-    public func run(onSuccess: @escaping (Output) -> Void, onFailure: @escaping (Failure) -> Void) -> AnyCancellable {
-        sink(
-            receiveCompletion: { completion in
-                if case let .failure(error) = completion {
-                    onFailure(error)
-                }
-            },
-            receiveValue: onSuccess
-        )
-    }
-}
-
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-extension Publishers.Promise where Failure == Never {
-    /// Similar to .sink, but with correct semantic for a single-value success or a failure. Creates demand for 1
-    /// value and completes after it, or on error.
-    /// - Parameters:
-    ///   - onSuccess: called when the promise is fulfilled successful with a value. Called only once and then
-    ///                you can consider this stream finished
-    /// - Returns: the subscription that can be cancelled at any point.
-    public func run(onSuccess: @escaping (Output) -> Void) -> AnyCancellable {
-        run(onSuccess: onSuccess, onFailure: { _ in })
-    }
-}
-
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-extension Publishers.Promise where Success == Void {
-    /// Similar to .sink, but with correct semantic for a single-value success or a failure. Creates demand for 1
-    /// value and completes after it, or on error.
-    /// - Parameters:
-    ///   - onFailure: called when the promise finds error. Called only once completing the stream. It's never
-    ///                called if a success was already called
-    /// - Returns: the subscription that can be cancelled at any point.
-    public func run(onFailure: @escaping (Failure) -> Void) -> AnyCancellable {
-        run(onSuccess: { _ in }, onFailure: onFailure)
-    }
-}
-
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-extension Publishers.Promise where Success == Void, Failure == Never {
-    /// Similar to .sink, but with correct semantic for a single-value success or a failure. Creates demand for 1
-    /// value and completes after it, or on error.
-    /// - Returns: the subscription that can be cancelled at any point.
-    public func run() -> AnyCancellable {
-        run(onSuccess: { _ in }, onFailure: { _ in })
     }
 }
 #endif

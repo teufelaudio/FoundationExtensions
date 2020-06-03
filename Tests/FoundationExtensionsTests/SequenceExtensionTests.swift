@@ -6,6 +6,7 @@
 //  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
 //
 
+#if !os(watchOS)
 import XCTest
 
 class SequenceExtensionTests: XCTestCase {
@@ -54,3 +55,4 @@ class SequenceExtensionTests: XCTestCase {
         XCTAssertEqual(sut, "41434142")
     }
 }
+#endif

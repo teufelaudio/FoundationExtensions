@@ -6,6 +6,7 @@
 //  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
 //
 
+#if !os(watchOS)
 import FoundationExtensions
 import XCTest
 
@@ -148,3 +149,4 @@ class DispatchTimeIntervalTests: XCTestCase {
         ], sut)
     }
 }
+#endif

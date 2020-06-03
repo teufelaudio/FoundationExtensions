@@ -87,3 +87,24 @@ extension Collection {
         }
     }
 }
+
+#if canImport(Combine)
+import Combine
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Collection {
+    /// Traverse is a way to apply a transformation that maps each element of a collection into a new element that is
+    /// contained in some other container type. But the result of this function flips the containers, making the collection
+    /// to be inside in the final result, and not outside as we would expect in a regular map.
+    ///
+    /// For this case the transformation maps to elements contained into a Publisher container, and if one of them completes with Error,
+    /// then the full publisher will fail and other eventual successful transformations will be discarded. Otherwise, the collected array
+    /// will be published as zipped elements (indexed events), not combine latest, until the subscription eventually completes with success.
+    ///
+    /// - Parameter transform: a transformation from the element type of this array, into a Publisher of any other type
+    /// - Returns: A publisher that will either give the outputs
+    public func traverse<P: Publisher>(_ transform: (Element) -> P) -> AnyPublisher<[P.Output], P.Failure> {
+        AnyPublisher.zip(map(transform))
+    }
+}
+#endif

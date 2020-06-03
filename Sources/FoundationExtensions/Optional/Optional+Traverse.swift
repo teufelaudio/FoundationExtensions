@@ -6,7 +6,6 @@
 //  Copyright © 2018 Lautsprecher Teufel GmbH. All rights reserved.
 //
 
-import Combine
 import Foundation
 
 extension Optional {
@@ -29,3 +28,16 @@ extension Optional {
         } ?? .success(nil)
     }
 }
+
+#if canImport(Combine)
+import Combine
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Optional {
+    public func traverse<P: Combine.Publisher>(_ transform: (Wrapped) -> P) -> AnyPublisher<P.Output?, P.Failure> {
+        map { value in
+            transform(value).map { $0 as P.Output? }.eraseToAnyPublisher()
+        } ?? Just<P.Output?>(nil).mapError(absurd).eraseToAnyPublisher()
+    }
+}
+#endif

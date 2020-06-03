@@ -6,6 +6,7 @@
 //  Copyright © 2018 Lautsprecher Teufel GmbH. All rights reserved.
 //
 
+#if !os(watchOS)
 import FoundationExtensions
 import XCTest
 
@@ -240,3 +241,4 @@ extension OptionalExtensionTests {
         XCTAssertEqual(expectedResult, sut)
     }
 }
+#endif
