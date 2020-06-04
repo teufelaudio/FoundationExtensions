@@ -6,6 +6,7 @@
 //  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
 //
 
+#if !os(watchOS)
 import Foundation
 import FoundationExtensions
 import XCTest
@@ -147,8 +148,9 @@ extension UniqueTests {
         )
     }
 }
+#endif
 
-#if canImport(Combine)
+#if !os(watchOS) && canImport(Combine)
 import Combine
 extension UniqueTests {
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)

@@ -1,6 +1,6 @@
 //
 //  Mergeable.swift
-//  TeufelBluetooth
+//  FoundationExtensions
 //
 //  Created by Luiz Barbosa on 29.05.20.
 //  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
