@@ -22,3 +22,12 @@ public struct AnyEncodable: Encodable {
         try encodeFunc(encoder)
     }
 }
+
+// MARK: - Encodable x AnyEncodable
+extension Encodable {
+    /// Creates an AnyEncodable out of the receiver.
+    /// - Returns: AnyEncodable that contains the encoding function of the receiver.
+    public var anyEncodable: AnyEncodable {
+        return AnyEncodable(self)
+    }
+}
