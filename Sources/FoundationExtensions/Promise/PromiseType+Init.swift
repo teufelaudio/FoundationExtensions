@@ -36,7 +36,6 @@ extension PromiseType {
     /// - Parameters:
     ///   - body: A throwing closure to evaluate.
     ///   - errorTransform: a way to transform the throwing error from type `Error` to type `Failure` of this `PromiseType`
-    @_transparent
     public init(catching body: @escaping () throws -> Success, errorTransform: (Error) -> Failure) {
         self.init(result: Result { try body() }.mapError(errorTransform))
     }
@@ -48,7 +47,6 @@ extension PromiseType where Failure == Error {
     /// returned value as a success, or any thrown error as a failure.
     ///
     /// - Parameter body: A throwing closure to evaluate.
-    @_transparent
     public init(catching body: @escaping () throws -> Success) {
         self.init(result: Result { try body() })
     }
