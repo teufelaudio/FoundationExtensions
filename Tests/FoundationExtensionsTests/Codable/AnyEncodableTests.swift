@@ -1,8 +1,9 @@
 //
 //  AnyEncodableTests.swift
-//  
+//  FoundationExtensionsTests
 //
 //  Created by Luis Reisewitz on 04.06.20.
+//  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
 //
 
 #if !os(watchOS)

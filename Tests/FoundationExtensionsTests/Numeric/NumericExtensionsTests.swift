@@ -167,34 +167,6 @@ class NumericExtensionsTests: XCTestCase {
 
     }
 
-    func testConstrain() {
-        // given
-        let tests = [
-            (minimum: 0.0, maximum: 100.0, given: 0.0, expected: 0.0),
-            (minimum: 0.0, maximum: 100.0, given: 50.0, expected: 50.0),
-            (minimum: 0.0, maximum: 100.0, given: 100.0, expected: 100.0),
-            (minimum: 0.0, maximum: 100.0, given: -0.01, expected: 0.0),
-            (minimum: 0.0, maximum: 100.0, given: -1.0, expected: 0.0),
-            (minimum: 0.0, maximum: 100.0, given: -1000.0, expected: 0.0),
-            (minimum: 0.0, maximum: 100.0, given: 100.01, expected: 100.0),
-            (minimum: 0.0, maximum: 100.0, given: 101.0, expected: 100.0),
-            (minimum: 0.0, maximum: 100.0, given: 1000.0, expected: 100.0)
-        ]
-
-        // when
-        let results: [(result: Double, expected: Double, failureMessage: String)] = tests.map {
-            let result = $0.given.clamped(to: ($0.minimum ... $0.maximum))
-            let failureMessage = "Expected \($0.given) when constrained to range from \($0.minimum) to \($0.maximum) " +
-                "to be \($0.expected) but found \(result)"
-            return (result: result, expected: $0.expected, failureMessage: failureMessage)
-        }
-
-        // then
-        results.forEach {
-            XCTAssertEqual($0.expected, $0.result, $0.failureMessage)
-        }
-    }
-
     func testIntLinearInterpolation() {
         // given
         let tests = [
