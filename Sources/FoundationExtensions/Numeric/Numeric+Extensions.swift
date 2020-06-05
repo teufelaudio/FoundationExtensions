@@ -173,16 +173,3 @@ extension Double {
         L / (1.0 + pow(M_E, -k * (x - x₀)))
     }
 }
-
-extension Numeric where Self: Comparable {
-    /// Constrain current number in a range. If number is lower than range, the result will be the minimum (lower bound),
-    /// if the number is greater than range, the result will be the maximum (upper bound). If the number is within the
-    /// range, the result will be the number.
-    ///
-    /// - Parameter range: Closed range, for example `(0.0 ... 100.0)`
-    /// - Returns: A number within the range, that can be the original number itself or minimum/maximum in case the
-    ///            original number was lower or higher than expected.
-    public func clamped(to range: ClosedRange<Self>) -> Self {
-        return min(max(self, range.lowerBound), range.upperBound)
-    }
-}
