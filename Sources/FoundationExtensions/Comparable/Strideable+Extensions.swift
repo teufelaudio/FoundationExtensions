@@ -8,6 +8,8 @@
 
 import Foundation
 
+// swiftlint:disable identifier_name
+
 /// Creates a range for an average number and a tolerance. The range will be from the average number minus the tolerance,
 /// to the average number plus the tolerance: `(average - tolerance ... average + tolerance)`. That means, if the number
 /// is `5` and tolerance is `2`, range will be `(3...7)`.

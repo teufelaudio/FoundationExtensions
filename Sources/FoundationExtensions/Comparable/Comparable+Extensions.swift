@@ -8,6 +8,8 @@
 
 import Foundation
 
+// swiftlint:disable identifier_name
+
 extension Comparable {
 
     /// For this element, checks if it's within a certain range of elements, that means, if it's greater or equals to the
