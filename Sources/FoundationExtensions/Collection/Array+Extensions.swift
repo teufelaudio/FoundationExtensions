@@ -7,39 +7,6 @@
 //
 
 extension Array {
-
-    /// Safely get the item at the given index. If the index is out-of-bounds, it will return nil
-    ///
-    /// - Parameter index: element index
-    /// - Returns: element at the given index or nil if wrong index was provided.
-    public subscript(safe index: Int) -> Element? {
-        get {
-            return inBounds(index) ? self[index] : nil
-        }
-        set {
-            guard inBounds(index), let newValue = newValue else { return }
-            self[index] = newValue
-        }
-    }
-
-    /// Safely remove the item at the given index and return it.
-    /// If the index is out-of-bounds, array won't be modified and the return will be nil.
-    ///
-    /// - Parameter index: element index
-    /// - Returns: element removed or nil if wrong index was provided.
-    @discardableResult
-    public mutating func removeSafe(at index: Int) -> Element? {
-        guard let item = self[safe: index] else { return nil }
-        remove(at: index)
-        return item
-    }
-
-    private func inBounds(_ index: Int) -> Bool {
-        return index < count && index >= 0
-    }
-}
-
-extension Array {
     /// Convenient way to call static functions without having to provide the generic type
     typealias Generic<T> = [T]
 
