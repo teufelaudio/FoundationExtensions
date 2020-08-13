@@ -6,7 +6,8 @@
 //  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
 //
 
-#if !os(watchOS)
+#if !os(watchOS) && canImport(Combine)
+
 import FoundationExtensions
 import Combine
 import XCTest
@@ -14,6 +15,7 @@ import XCTest
 class PublishersPrependLatestTests: XCTestCase {
 }
 
+@available(iOS 13.0, tvOS 13.0, watchOS 6.0, OSX 10.15, *)
 extension PublishersPrependLatestTests {
 
     func testFirstEmptyThenBothvalue() {
