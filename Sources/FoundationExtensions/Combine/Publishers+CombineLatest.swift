@@ -10,7 +10,7 @@
 import Foundation
 import Combine
 
-@available(iOS 13.0, *)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Publishers {
     public struct CombineLatest5<A, B, C, D, E>: Publisher where A: Publisher,
                                                                  B: Publisher,

@@ -15,7 +15,7 @@ import XCTest
 class PublishersPrependLatestTests: XCTestCase {
 }
 
-@available(iOS 13.0, *)
+@available(iOS 13.0, tvOS 13.0, watchOS 6.0, OSX 10.15, *)
 extension PublishersPrependLatestTests {
 
     func testFirstEmptyThenBothvalue() {
