@@ -38,4 +38,20 @@ extension Array where Element: Identifiable {
         self[index] = element
         return true
     }
+
+    /// Finds the first element with the given ID in receiving array.
+    /// - Parameter id: ID of the element to find.
+    /// - Returns: Returns the first element with the given ID, or nil if an element with the given ID could
+    /// not be found.
+    public func first(by id: Element.ID) -> Element? {
+        first(where: { $0.id == id })
+    }
+
+    /// Finds the last element with the given ID in receiving array.
+    /// - Parameter id: ID of the element to find.
+    /// - Returns: Returns the last element with the given ID, or nil if an element with the given ID could
+    /// not be found.
+    public func last(by id: Element.ID) -> Element? {
+        last(where: { $0.id == id })
+    }
 }
