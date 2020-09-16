@@ -10,7 +10,7 @@ import Foundation
 
 extension Array where Self.Element : Equatable {
 
-    public func leftOf(_ element: Element) -> Element? {
+    public func left(of element: Element) -> Element? {
         guard let elementIndex = firstIndex(of: element) else { return nil }
         if elementIndex == 0 {
             return self.last
@@ -18,7 +18,7 @@ extension Array where Self.Element : Equatable {
         return self[safe: (elementIndex - 1)]
     }
 
-    public func rightOf(_ element: Element) -> Element? {
+    public func right(of element: Element) -> Element? {
         guard let elementIndex = firstIndex(of: element) else { return nil }
         if elementIndex >= (count - 1) {
             return self.first

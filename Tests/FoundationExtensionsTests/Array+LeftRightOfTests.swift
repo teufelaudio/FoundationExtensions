@@ -19,10 +19,10 @@ extension ArrayLeftRightOfTests {
         let sut = [1, 3, 7, 9, 25]
 
         // then
-        XCTAssertEqual(sut.rightOf(1), 3)
-        XCTAssertEqual(sut.rightOf(9), 25)
-        XCTAssertEqual(sut.rightOf(25), 1)
-        XCTAssertEqual(sut.rightOf(666), nil)
+        XCTAssertEqual(sut.right(of: 1), 3)
+        XCTAssertEqual(sut.right(of: 9), 25)
+        XCTAssertEqual(sut.right(of: 25), 1)
+        XCTAssertEqual(sut.right(of: 666), nil)
     }
 
     func testLeftOf() {
@@ -30,10 +30,10 @@ extension ArrayLeftRightOfTests {
         let sut = [1, 3, 7, 9, 25]
 
         // then
-        XCTAssertEqual(sut.leftOf(1), 25)
-        XCTAssertEqual(sut.leftOf(3), 1)
-        XCTAssertEqual(sut.leftOf(25), 9)
-        XCTAssertEqual(sut.leftOf(666), nil)
+        XCTAssertEqual(sut.left(of: 1), 25)
+        XCTAssertEqual(sut.left(of: 3), 1)
+        XCTAssertEqual(sut.left(of: 25), 9)
+        XCTAssertEqual(sut.left(of: 666), nil)
     }
 }
 #endif
