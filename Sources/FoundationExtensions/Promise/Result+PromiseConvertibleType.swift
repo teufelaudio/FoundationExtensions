@@ -40,7 +40,7 @@ extension Result: PromiseConvertibleType {
     /// if the effect had already started.
     /// This property will create a Promise that, upon subscription and `demand > .none` will emit success or failure, depending
     /// on this `Result` instance.
-    public func promise<T: Error>() -> Publishers.Promise<Success, Failure> where Failure == PromiseError<T> {
+    public func promise<UpstreamError: Error>() -> Publishers.Promise<Success, UpstreamError> where Failure == PromiseError<UpstreamError> {
         Publishers.Promise(result: self)
     }
 }
