@@ -151,16 +151,26 @@ extension Publishers.Promise {
 }
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-extension Publishers.Promise where UpstreamFailure == Never {
-    public func setFailureType<T: Error>(to failureType: T.Type) -> Publishers.Promise<Success, PromiseError<T>> {
-        mapError { _ in
+extension Publishers.Promise {
+    public func mapError<NewError: Error>(_ transform: @escaping (UpstreamFailure) -> NewError) -> Publishers.Promise<Success, NewError> {
+        self.catch { (promiseError: PromiseError<UpstreamFailure>) -> AnyPublisher<Success, NewError> in
+            switch promiseError {
+            case .completedWithoutValue:
+                return Empty().eraseToAnyPublisher()
+            case let .receivedError(error):
+                return Fail(error: transform(error)).eraseToAnyPublisher()
+            }
+        }.promise
+    }
+
+    public func setFailureType<T: Error>(to failureType: T.Type) -> Publishers.Promise<Success, T> where UpstreamFailure == Never {
+        self.catch { (promiseError: PromiseError<UpstreamFailure>) -> Empty<Success, T> in
             // If we are here, it's because the upstream threw .completedWithoutValue...
-            // It's impossible to trigger .receivedError because UpstreamFailure is Never
-            // Therefore, we send .completedWithoutValue downstream as well, there's nothing else to map,
-            // just a simple container type signature change, similar to .setFailureType other publishers.
-            .completedWithoutValue
-        }
-        .promise
+            // It's impossible for it to trigger .receivedError because UpstreamFailure is Never
+            // Therefore, we send an empty publisher downstream, once converted to a promise, it
+            // will retrigger .completedWithoutValue downstream as well, as soon as the Empty completes.
+            Empty()
+        }.promise
     }
 }
 #endif
