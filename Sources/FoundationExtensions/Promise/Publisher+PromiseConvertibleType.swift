@@ -36,7 +36,7 @@ extension Publisher {
     /// behaviour, then, will be similar to `Deferred<Future<Output, Failure>>`, however with some extra features such as better
     /// zips, and a run function to easily start the effect. The cancellation is possible and will be forwarded to the upstream
     /// if the effect had already started.
-    public func promise<T: Error>() -> Publishers.Promise<Output, Failure> where Failure == PromiseError<T> {
+    public func promise<UpstreamError: Error>() -> Publishers.Promise<Output, UpstreamError> where Failure == PromiseError<UpstreamError> {
         Publishers.Promise { self }
     }
 }#endif
