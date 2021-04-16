@@ -62,6 +62,27 @@ extension Publishers {
             }
         }
 
+        /// A promise from an upstream publisher. Because this is an closure parameter, the upstream will become a factory
+        /// and its creation will be deferred until there's some positive demand from the downstream.
+        /// - Parameter upstream: a closure that creates an upstream publisher. This is an closure, so creation will be deferred.
+        public init<P: Publisher>(_ upstream: @escaping () -> P) where P.Output == Success, P.Failure == PromiseError<UpstreamFailure> {
+            self.operation = { sinkNotification in
+                upstream()
+                    .first()
+                    .sink(
+                        receiveCompletion: { result in
+                            switch result {
+                            case .finished, .failure(.completedWithoutValue):
+                                sinkNotification.receiveCompletion(.finished)
+                            case let .failure(.receivedError(error)):
+                                sinkNotification.receiveCompletion(.failure(error))
+                            }
+                        },
+                        receiveValue: sinkNotification.receiveValue
+                    )
+            }
+        }
+
         public init(operation: @escaping OperationClosure) {
             self.operation = { sinkNotification in
                 let cancellable = operation { result in
