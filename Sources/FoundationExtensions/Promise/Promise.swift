@@ -181,7 +181,7 @@ extension Publishers.Promise {
             case let .receivedError(error):
                 return Fail(error: transform(error)).eraseToAnyPublisher()
             }
-        }.promise
+        }.promise()
     }
 
     public func setFailureType<T: Error>(to failureType: T.Type) -> Publishers.Promise<Success, T> where UpstreamFailure == Never {
@@ -191,7 +191,7 @@ extension Publishers.Promise {
             // Therefore, we send an empty publisher downstream, once converted to a promise, it
             // will retrigger .completedWithoutValue downstream as well, as soon as the Empty completes.
             Empty()
-        }.promise
+        }.promise()
     }
 }
 #endif

@@ -27,7 +27,7 @@ extension PromiseType {
     -> Publishers.Promise<TargetType, Never> {
         map(onSuccess)
             .catch { error in Just(onFailure(error)) }
-            .promise
+            .promise()
     }
 
     /// Case analysis for Promise. When Promises runs, this step will evaluate possible results, run actions for them and
@@ -53,7 +53,7 @@ extension PromiseType {
                     run(error)
                 }
             }
-        ).promise
+        ).promise()
     }
 }
 #endif
