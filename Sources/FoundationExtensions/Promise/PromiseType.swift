@@ -13,10 +13,12 @@ import Foundation
 /// Any type or protocol that can be converted into `Promise<Success, Failure>`
 /// Used for type erasure.
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-public protocol PromiseType: PromiseConvertibleType, Publisher where Success == Output {
+public protocol PromiseType: PromiseConvertibleType, Publisher where Success == Output, Failure == PromiseError<UpstreamFailure> {
+    associatedtype UpstreamFailure: Error
+    
     /// A promise from an upstream publisher. Because this is an closure parameter, the upstream will become a factory
     /// and its creation will be deferred until there's some positive demand from the downstream.
     /// - Parameter upstream: a closure that creates an upstream publisher. This is an closure, so creation will be deferred.
-    init<P: Publisher>(_ upstream: @escaping () -> P) where P.Output == Success, P.Failure == Failure
+    init<P: Publisher>(_ upstream: @escaping () -> P) where P.Output == Success, P.Failure == UpstreamFailure
 }
 #endif

@@ -20,13 +20,13 @@ extension PromiseType {
 
     /// A promise from a hardcoded error
     /// - Parameter error: a hardcoded error. It's gonna be evaluated on demand from downstream
-    public init(error: Failure) {
-        self.init { Fail(error: error).map(absurd).eraseToAnyPublisher() }
+    public init(error: UpstreamFailure) {
+        self.init { Fail(error: error).eraseToAnyPublisher() }
     }
 
     /// A promise from a hardcoded result value
     /// - Parameter value: a hardcoded result value. It's gonna be evaluated on demand from downstream
-    public init(result: Result<Success, Failure>) {
+    public init(result: Result<Success, UpstreamFailure>) {
         self.init { result.publisher.eraseToAnyPublisher() }
     }
 
@@ -36,13 +36,13 @@ extension PromiseType {
     /// - Parameters:
     ///   - body: A throwing closure to evaluate.
     ///   - errorTransform: a way to transform the throwing error from type `Error` to type `Failure` of this `PromiseType`
-    public init(catching body: @escaping () throws -> Success, errorTransform: (Error) -> Failure) {
+    public init(catching body: @escaping () throws -> Success, errorTransform: (Error) -> UpstreamFailure) {
         self.init(result: Result { try body() }.mapError(errorTransform))
     }
 }
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-extension PromiseType where Failure == Error {
+extension PromiseType where UpstreamFailure == Error {
     /// Creates a new promise by evaluating a synchronous throwing closure, capturing the
     /// returned value as a success, or any thrown error as a failure.
     ///
