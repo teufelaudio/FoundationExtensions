@@ -42,24 +42,12 @@ class PromiseTests: XCTestCase {
         waiter()
     }
 
-    func testInitWithUpstreamThatCompletesWithoutValues() {
-        let subject = PassthroughSubject<String, String>()
-        let promise = Publishers.Promise({ subject })
-        let waiter = assert(
-            publisher: promise,
-            completesWithoutValues: .failedWithError(.completedWithoutValue),
-            timeout: 0.00001
-        )
-        subject.send(completion: .finished)
-        waiter()
-    }
-
     func testInitWithUpstreamThatCompletesWithErrorBeforeValues() {
         let subject = PassthroughSubject<String, String>()
         let promise = Publishers.Promise({ subject })
         let waiter = assert(
             publisher: promise,
-            completesWithoutValues: .failedWithError(.receivedError("cataploft!")),
+            completesWithoutValues: .failedWithError("cataploft!"),
             timeout: 0.00001
         )
         subject.send(completion: .failure("cataploft!"))
@@ -156,7 +144,7 @@ extension PromiseTests {
         }
         let waiter = assert(
             publisher: promise,
-            completesWithoutValues: .failedWithError(.receivedError("cataploft!")),
+            completesWithoutValues: .failedWithError("cataploft!"),
             timeout: 0.00001
         )
         subject.send(completion: .failure("cataploft!"))

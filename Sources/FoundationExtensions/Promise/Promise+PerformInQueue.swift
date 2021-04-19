@@ -14,8 +14,8 @@ import Foundation
 extension DispatchWorkItem: Cancellable { }
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-extension Publishers.Promise where UpstreamFailure == Error {
-    public static func perform(in queue: DispatchQueue, operation: @escaping () throws -> Output) -> Self {
+extension Publishers.Promise {
+    public static func perform(in queue: DispatchQueue, operation: @escaping () throws -> Output) -> Self where Failure == Error {
         .init { completion in
             let workItem = DispatchWorkItem {
                 do {
@@ -30,11 +30,8 @@ extension Publishers.Promise where UpstreamFailure == Error {
             return workItem
         }
     }
-}
 
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-extension Publishers.Promise where UpstreamFailure == Never {
-    public static func perform(in queue: DispatchQueue, operation: @escaping () -> Output) -> Self {
+    public static func perform(in queue: DispatchQueue, operation: @escaping () -> Output) -> Self where Failure == Never {
         .init { completion in
             let workItem = DispatchWorkItem {
                 let value = operation()

@@ -21,9 +21,6 @@ public protocol PromiseConvertibleType {
     associatedtype Failure: Error
 
     /// Identity, return itself. Necessary for protocol programming.
-    func promise() -> Publishers.Promise<Success, Failure>
-
-    /// Identity, return itself. Necessary for protocol programming.
-    func promise<UpstreamError: Error>() -> Publishers.Promise<Success, UpstreamError> where Failure == PromiseError<UpstreamError>
+    var promise: Publishers.Promise<Success, Failure> { get }
 }
 #endif
