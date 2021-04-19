@@ -45,6 +45,8 @@ extension Publishers {
             self.init(upstreamUncheckedForEmptiness: upstream)
         }
 
+        // https://www.fivestars.blog/articles/disfavoredOverload/
+        @_disfavoredOverload
         internal init<P: Publisher>(upstreamUncheckedForEmptiness upstream: @escaping () -> P) where P.Output == Success, P.Failure == Failure {
             self.operation = { sinkNotification in
                 upstream()

@@ -15,7 +15,7 @@ import XCTest
 class PromiseTests: XCTestCase {
     func testInitWithUpstreamThatSendsOneValueAndCompletes() {
         let subject = PassthroughSubject<String, String>()
-        let promise = Publishers.Promise({ subject })
+        let promise = Publishers.Promise { subject.nonEmpty(fallback: { .failure("wrooong") }) }
         let waiter = assert(publisher: promise, eventuallyReceives: "!@$%@*#$", andCompletes: true, timeout: 0.00001)
         subject.send("!@$%@*#$")
         subject.send(completion: .finished)
@@ -24,7 +24,7 @@ class PromiseTests: XCTestCase {
 
     func testInitWithUpstreamThatSendsOneValueAndNeverCompletes() {
         let subject = PassthroughSubject<String, String>()
-        let promise = Publishers.Promise({ subject })
+        let promise = Publishers.Promise { subject.nonEmpty(fallback: { .failure("wrooong") }) }
         let waiter = assert(publisher: promise, eventuallyReceives: "!@$%@*#$", andCompletes: true, timeout: 0.00001)
         subject.send("!@$%@*#$")
         waiter()
@@ -32,7 +32,7 @@ class PromiseTests: XCTestCase {
 
     func testInitWithUpstreamThatSendsMultipleValuesAndNeverCompletes() {
         let subject = PassthroughSubject<String, String>()
-        let promise = Publishers.Promise({ subject })
+        let promise = Publishers.Promise { subject.nonEmpty(fallback: { .failure("wrooong") }) }
         let waiter = assert(publisher: promise, eventuallyReceives: "!@$%@*#$", andCompletes: true, timeout: 0.00001)
         subject.send("!@$%@*#$")
         subject.send("will")
@@ -44,7 +44,7 @@ class PromiseTests: XCTestCase {
 
     func testInitWithUpstreamThatCompletesWithErrorBeforeValues() {
         let subject = PassthroughSubject<String, String>()
-        let promise = Publishers.Promise({ subject })
+        let promise = Publishers.Promise { subject.nonEmpty(fallback: { .success("wrooong") }) }
         let waiter = assert(
             publisher: promise,
             completesWithoutValues: .failedWithError("cataploft!"),
@@ -56,10 +56,35 @@ class PromiseTests: XCTestCase {
 
     func testInitWithUpstreamThatCompletesWithErrorAfterSendingValueSoPromiseIgnoresTheError() {
         let subject = PassthroughSubject<String, String>()
-        let promise = Publishers.Promise({ subject })
+        let promise = Publishers.Promise { subject.nonEmpty(fallback: { .failure("cataploft!") }) }
         let waiter = assert(publisher: promise, eventuallyReceives: "!@$%@*#$", andCompletes: true, timeout: 0.00001)
         subject.send("!@$%@*#$")
         subject.send(completion: .failure("cataploft!"))
+        waiter()
+    }
+
+    func testInitWithUpstreamThatCompletesWithoutValuesButFallsbackToSuccess() {
+        let subject = PassthroughSubject<String, String>()
+        let promise = Publishers.Promise { subject.nonEmpty(fallback: { .success("hey, nice fallback, dude") }) }
+        let waiter = assert(
+            publisher: promise,
+            eventuallyReceives: "hey, nice fallback, dude",
+            andCompletes: true,
+            timeout: 0.00001
+        )
+        subject.send(completion: .finished)
+        waiter()
+    }
+
+    func testInitWithUpstreamThatCompletesWithoutValuesButFallsbackToFailure() {
+        let subject = PassthroughSubject<String, String>()
+        let promise = Publishers.Promise { subject.nonEmpty(fallback: { .failure("failure fallback") }) }
+        let waiter = assert(
+            publisher: promise,
+            completesWithoutValues: .failedWithError("failure fallback"),
+            timeout: 0.00001
+        )
+        subject.send(completion: .finished)
         waiter()
     }
 }
