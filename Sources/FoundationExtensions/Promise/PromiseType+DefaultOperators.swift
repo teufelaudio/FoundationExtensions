@@ -59,28 +59,24 @@ extension PromiseType {
         }
     }
 
+    public func print(_ prefix: String = "", to stream: TextOutputStream? = nil) -> Publishers.Promise<Output, Failure> {
+        Publishers.Promise { self.eraseToAnyPublisher().print(prefix, to: stream) }
+    }
+
     public func flatMapResult<T>(maxPublishers: Subscribers.Demand = .unlimited, _ transform: @escaping (Output) -> Result<T, Failure>) -> Publishers.Promise<T, Failure> {
-        Publishers.Promise {
-            self.eraseToAnyPublisher().flatMapResult(maxPublishers: maxPublishers, transform)
-        }
+        Publishers.Promise { self.eraseToAnyPublisher().flatMapResult(maxPublishers: maxPublishers, transform) }
     }
 
     public func flatMap<O>(maxPublishers: Subscribers.Demand = .unlimited, _ transform: @escaping (Output) -> Publishers.Promise<O, Never>) -> Publishers.Promise<O, Failure> {
-        Publishers.Promise {
-            self.eraseToAnyPublisher().flatMap(maxPublishers: maxPublishers) { transform($0).setFailureType(to: Failure.self) }
-        }
+        Publishers.Promise { self.eraseToAnyPublisher().flatMap(maxPublishers: maxPublishers) { transform($0).setFailureType(to: Failure.self) } }
     }
 
     public func flatMap<O, E: Error>(maxPublishers: Subscribers.Demand = .unlimited, _ transform: @escaping (Output) -> Publishers.Promise<O, E>) -> Publishers.Promise<O, E> where Failure == Never {
-        Publishers.Promise {
-            self.eraseToAnyPublisher().setFailureType(to: E.self).flatMap(maxPublishers: maxPublishers, transform)
-        }
+        Publishers.Promise { self.eraseToAnyPublisher().setFailureType(to: E.self).flatMap(maxPublishers: maxPublishers, transform) }
     }
 
     public func flatMap<O>(maxPublishers: Subscribers.Demand = .unlimited, _ transform: @escaping (Output) -> Publishers.Promise<O, Failure>) -> Publishers.Promise<O, Failure> {
-        Publishers.Promise {
-            self.eraseToAnyPublisher().flatMap(maxPublishers: maxPublishers, transform)
-        }
+        Publishers.Promise { self.eraseToAnyPublisher().flatMap(maxPublishers: maxPublishers, transform) }
     }
 
     public func contains(_ output: Output) -> Publishers.Promise<Bool, Failure> where Output: Equatable {
@@ -112,6 +108,7 @@ extension PromiseType {
     }
 
     public func first() -> Self { self }
+
     public func last() -> Self { self }
 
     public func replaceError(with output: Output) -> Publishers.Promise<Output, Never> {
@@ -137,6 +134,20 @@ extension PromiseType {
 
     public func setFailureType<E: Error>(to failureType: E.Type) -> Publishers.Promise<Output, E> where Failure == Never {
         Publishers.Promise { self.eraseToAnyPublisher().setFailureType(to: failureType) }
+    }
+
+    public func delay<S: Scheduler>(
+        for interval: S.SchedulerTimeType.Stride,
+        tolerance: S.SchedulerTimeType.Stride? = nil,
+        scheduler: S,
+        options: S.SchedulerOptions? = nil
+    ) -> Publishers.Promise<Output, Failure> {
+        Publishers.Promise { self.eraseToAnyPublisher().delay(for: interval, tolerance: tolerance, scheduler: scheduler, options: options) }
+    }
+
+    @available(*, deprecated, message: "Don't call .promise in a Promise")
+    public var promise: Publishers.Promise<Success, Failure> {
+        self as? Publishers.Promise ?? Publishers.Promise { self }
     }
 }
 #endif
