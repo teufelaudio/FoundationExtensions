@@ -145,6 +145,17 @@ extension PromiseType {
         Publishers.Promise { self.eraseToAnyPublisher().delay(for: interval, tolerance: tolerance, scheduler: scheduler, options: options) }
     }
 
+    public func timeout<S>(
+        _ interval: S.SchedulerTimeType.Stride,
+        scheduler: S,
+        options: S.SchedulerOptions? = nil,
+        customError: @escaping () -> Failure
+    ) -> Publishers.Promise<Output, Failure> where S : Scheduler {
+        Publishers.Promise {
+            self.eraseToAnyPublisher().timeout(interval, scheduler: scheduler, options: options, customError: customError)
+        }
+    }
+
     @available(*, deprecated, message: "Don't call .promise in a Promise")
     public var promise: Publishers.Promise<Success, Failure> {
         self as? Publishers.Promise ?? Publishers.Promise { self }
