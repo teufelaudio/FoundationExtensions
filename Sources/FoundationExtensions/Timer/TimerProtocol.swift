@@ -9,7 +9,7 @@
 import Foundation
 
 // sourcery: AutoMockable
-public protocol TimerProtocol: class {
+public protocol TimerProtocol: AnyObject {
     func fire()
     var fireDate: Date { get set }
     var timeInterval: TimeInterval { get }

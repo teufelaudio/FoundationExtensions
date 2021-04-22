@@ -26,8 +26,7 @@ extension PromiseType {
     public func fold<TargetType>(onSuccess: @escaping (Success) -> TargetType, onFailure: @escaping (Failure) -> TargetType)
     -> Publishers.Promise<TargetType, Never> {
         map(onSuccess)
-            .catch { error in Just(onFailure(error)) }
-            .promise
+            .catch { error in .init(value: onFailure(error)) }
     }
 
     /// Case analysis for Promise. When Promises runs, this step will evaluate possible results, run actions for them and
