@@ -195,6 +195,42 @@ extension PromiseTests {
         subject.send(completion: .failure("cataploft!"))
         waiter()
     }
+
+    func testPromiseZipManySuccess() {
+        let subject1 = PassthroughSubject<String, String>()
+        let subject2 = PassthroughSubject<String, String>()
+        let subject3 = PassthroughSubject<String, String>()
+        let subject4 = PassthroughSubject<String, String>()
+
+        let promises: [Publishers.Promise<String, String>] = [subject1, subject2, subject3, subject4].map { subject in
+            Publishers.Promise<String, String> { completion in
+                subject.sink(
+                    receiveCompletion: { result in
+                        if case let .failure(error) = result {
+                            completion(.failure(error))
+                        }
+                    },
+                    receiveValue: { value in
+                        completion(.success(value))
+                    }
+                )
+            }
+        }
+
+        let zipped: Publishers.Promise<[String], String> = Publishers.Promise.zip(promises)
+
+        let waiter = assert(
+            publisher: zipped,
+            eventuallyReceives: ["p1", "p2", "p3", "p4"],
+            andCompletes: true,
+            timeout: 0.00001
+        )
+        subject1.send("p1")
+        subject4.send("p4")
+        subject2.send("p2")
+        subject3.send("p3")
+        waiter()
+    }
 }
 
 extension XCTestCase {

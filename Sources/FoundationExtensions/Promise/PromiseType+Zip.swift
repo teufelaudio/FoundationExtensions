@@ -372,4 +372,27 @@ extension PromiseType {
         }
     }
 }
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Publisher {
+    public static func zip<P: PromiseType>(_ promises: [P]) -> Publishers.Promise<[P.Output], P.Failure>
+    where P.Output == Output, P.Failure == Failure {
+        switch promises.count {
+        case ...0:
+            return .init(value: [])
+        case 1:
+            return promises[0].map { [$0] }
+        default:
+            let result: Publishers.Promise<[P.Output], P.Failure> = promises[0].map { [$0] }
+
+            return promises.dropFirst().reduce(result) { partial, current -> Publishers.Promise<[P.Output], P.Failure> in
+                Publishers.Promise.zip(
+                    partial,
+                    current
+                )
+                .map { accumulation, next in accumulation + [next] }
+            }
+        }
+    }
+}
 #endif
