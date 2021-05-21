@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Dictionary where Key: ExpressibleByStringLiteral {
+extension Dictionary where Key == String {
 
     /// Allows to use enum cases as a key for the subscript as long as the key of the Dictionary and the raw value of the enum
     /// is `ExpressibleByStringLiteral`
@@ -23,11 +23,11 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
     /// var foo = someDict[Key.foo]
     public subscript<Index: RawRepresentable>(index: Index) -> Value? where Index.RawValue == String {
         get {
-            return self[index.rawValue as! Key] // swiftlint:disable:this force_cast
+            return self[index.rawValue]
         }
 
         set {
-            self[index.rawValue as! Key] = newValue // swiftlint:disable:this force_cast
+            self[index.rawValue] = newValue
         }
     }
 }
