@@ -31,6 +31,21 @@ extension Publishers.Promise {
         }
     }
 
+    public static func perform(in queue: DispatchQueue, operation: @escaping () -> Result<Output, Failure>) -> Self {
+        .init { completion in
+            let workItem = DispatchWorkItem {
+                operation()
+                    .analysis(
+                        ifSuccess: { completion(.success($0)) },
+                        ifFailure: { completion(.failure($0)) }
+                    )
+            }
+
+            queue.async(execute: workItem)
+            return workItem
+        }
+    }
+
     public static func perform(in queue: DispatchQueue, operation: @escaping () -> Output) -> Self where Failure == Never {
         .init { completion in
             let workItem = DispatchWorkItem {
