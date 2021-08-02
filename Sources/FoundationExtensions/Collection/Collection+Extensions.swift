@@ -115,3 +115,27 @@ extension RangeReplaceableCollection {
         return item
     }
 }
+
+extension Collection {
+    /// Splits a Collection into subsets (Array of SubSequence) by grouping with a maximum amount of elements in each subset.
+    /// For example, if you have an array with 29 elements and call .split(maxSize: 5), you will end up with an
+    /// array containing 6 SubSequences: the first five SubSequences will have 5 elements each, and the last will have the last 4 elements.
+    /// Credit: https://www.hackingwithswift.com/example-code/language/how-to-split-an-array-into-chunks
+    public func split(maxSize: Int) -> [SubSequence] {
+        return stride(from: 0, to: count, by: maxSize).map {
+            let leftIndex = index(startIndex, offsetBy: $0)
+            let rightIndex = index(leftIndex, offsetBy: maxSize, limitedBy: endIndex) ?? endIndex
+            return self[leftIndex ..< rightIndex]
+        }
+    }
+}
+
+extension RandomAccessCollection {
+    /// Like map, but the transformation closure will give you a bool that will be false for all elements except the last one, which will be true.
+    public func mapDetectingLast<NewElement>(_ transform: (Bool, Element) -> NewElement) -> [NewElement] where Index: BinaryInteger {
+        enumerated().map { elementIndex, element in
+            let isLast = elementIndex == index(before: endIndex)
+            return transform(isLast, element)
+        }
+    }
+}

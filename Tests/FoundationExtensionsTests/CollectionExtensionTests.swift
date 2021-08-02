@@ -302,4 +302,117 @@ extension CollectionExtensionTests {
         XCTAssertNil(sut)
     }
 }
+
+extension CollectionExtensionTests {
+    func testSplitArrayInChunks() {
+        // given
+        let array = Array(100...113)
+
+        // when
+        let sut = array.split(maxSize: 4)
+
+        // then
+        XCTAssertEqual(sut.count, 4)
+
+        // First chunk
+        XCTAssertEqual(sut[0].count, 4)
+        XCTAssertTrue(sut[0].elementsEqual([100, 101, 102, 103]))
+
+        // Second chunk
+        XCTAssertEqual(sut[1].count, 4)
+        XCTAssertTrue(sut[1].elementsEqual([104, 105, 106, 107]))
+
+        // Third chunk
+        XCTAssertEqual(sut[2].count, 4)
+        XCTAssertTrue(sut[2].elementsEqual([108, 109, 110, 111]))
+
+        // Fourth chunk
+        XCTAssertEqual(sut[3].count, 2)
+        XCTAssertTrue(sut[3].elementsEqual([112, 113]))
+    }
+
+    func testSplitStringInChunks() {
+        // given
+        //                                                50 ↓                                             100 ↓
+        let string = """
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore \
+            et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut a\
+            liquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillu\
+            m dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui\
+             officia deserunt mollit anim id est laborum.
+            """
+
+        // when
+        let sut = string.split(maxSize: 50)
+
+        // then
+        XCTAssertEqual(sut.count, 9)
+        XCTAssertEqual(sut, [
+            "Lorem ipsum dolor sit amet, consectetur adipiscing",
+            " elit, sed do eiusmod tempor incididunt ut labore ",
+            "et dolore magna aliqua. Ut enim ad minim veniam, q",
+            "uis nostrud exercitation ullamco laboris nisi ut a",
+            "liquip ex ea commodo consequat. Duis aute irure do",
+            "lor in reprehenderit in voluptate velit esse cillu",
+            "m dolore eu fugiat nulla pariatur. Excepteur sint ",
+            "occaecat cupidatat non proident, sunt in culpa qui",
+            " officia deserunt mollit anim id est laborum."
+        ])
+    }
+
+    func testSplitDataInChunks() {
+        // given
+        let array = Data(0x01...0x12)
+
+        // when
+        let sut = array.split(maxSize: 5)
+
+        // then
+        XCTAssertEqual(sut.count, 4)
+
+        // First chunk
+        XCTAssertEqual(sut[0].count, 5)
+        XCTAssertTrue(sut[0].elementsEqual([0x01, 0x02, 0x03, 0x04, 0x05]))
+
+        // Second chunk
+        XCTAssertEqual(sut[1].count, 5)
+        XCTAssertTrue(sut[1].elementsEqual([0x06, 0x07, 0x08, 0x09, 0x0A]))
+
+        // Third chunk
+        XCTAssertEqual(sut[2].count, 5)
+        XCTAssertTrue(sut[2].elementsEqual([0x0B, 0x0C, 0x0D, 0x0E, 0x0F]))
+
+        // Fourth chunk
+        XCTAssertEqual(sut[3].count, 3)
+        XCTAssertTrue(sut[3].elementsEqual([0x10, 0x11, 0x12]))
+    }
+}
+
+extension CollectionExtensionTests {
+    func testMapDetectingLast() {
+        // given
+        let originalArray = [1, 1, 2, 3, 5, 8, 13, 21, 34]
+
+        // when
+        let sut = originalArray.mapDetectingLast { isLast, number in
+            "\(isLast ? "[last:" : "[not-last:")\(number)]"
+        }
+
+        // then
+        XCTAssertEqual(
+            [
+                "[not-last:1]",
+                "[not-last:1]",
+                "[not-last:2]",
+                "[not-last:3]",
+                "[not-last:5]",
+                "[not-last:8]",
+                "[not-last:13]",
+                "[not-last:21]",
+                "[last:34]",
+            ],
+            sut
+        )
+    }
+}
 #endif
