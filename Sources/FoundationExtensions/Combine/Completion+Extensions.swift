@@ -1,7 +1,9 @@
 // Copyright © 2021 Lautsprecher Teufel GmbH. All rights reserved.
 
+#if canImport(Combine)
 import Combine
 
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Subscribers.Completion {
     /// Instead of Switch/Case over Completion, it's easier to transform it into Result and use all Result operators.
     /// Example:
@@ -27,6 +29,7 @@ extension Subscribers.Completion {
     }
 }
 
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Publisher {
     /// A simplified version of sink that allows to catch errors but ignore successful completions.
     /// Instead of:
@@ -55,3 +58,4 @@ extension Publisher {
         )
     }
 }
+#endif
