@@ -34,7 +34,9 @@ extension Numeric {
 extension Data {
 
     public func range(start: Int, length: Int) -> Data {
-        subdata(in: start..<start + length)
+        guard start < endIndex else { return Data() }
+        let end = Swift.min(endIndex, start + length)
+        return subdata(in: start ..< end)
     }
 
     public func readValue<T>() -> T {
