@@ -63,15 +63,6 @@ extension ResultType {
         return fold(onSuccess: identity,
                     onFailure: { NewResultType(error: $0) })
     }
-
-    /// Joins two result types into one, making a flat container out of a double-level container on the right side
-    ///
-    /// - Returns: flat result container
-    public func flattenRight<NewResultType: ResultType>()
-    -> NewResultType where Success == NewResultType.Success, Failure == NewResultType {
-            return fold(onSuccess: { NewResultType(value: $0) },
-                        onFailure: identity)
-    }
 }
 
 // MARK: - Applicative

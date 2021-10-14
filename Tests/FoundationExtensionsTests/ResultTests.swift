@@ -646,41 +646,6 @@ class ResultTests: XCTestCase {
         XCTAssertEqual(.failure(error), sut)
     }
 
-    func testFlattenRightSuccess() {
-        // given
-        let result = Result<String, Result<String, AnyError>>.success("success")
-
-        // when
-        let sut = result.flattenRight()
-
-        // then
-        XCTAssertEqual(.success("success"), sut)
-    }
-
-    func testFlattenRightFailureSuccess() {
-        // given
-        let message = "nested value"
-        let result = Result<String, Result<String, AnyError>>.failure(.success(message))
-
-        // when
-        let sut = result.flattenRight()
-
-        // then
-        XCTAssertEqual(Result<String, AnyError>.success(message), sut)
-    }
-
-    func testFlattenRightFailureFailure() {
-        // given
-        let error = AnyError()
-        let result = Result<String, Result<String, AnyError>>.failure(.failure(error))
-
-        // when
-        let sut = result.flattenRight()
-
-        // then
-        XCTAssertEqual(.failure(error), sut)
-    }
-
     func testApplySuccessfulTransformationOnSuccessfulResult() {
         // given
         let result = Result<String, AnyError>.success("42")
@@ -1280,5 +1245,4 @@ class ResultTests: XCTestCase {
         XCTAssertEqual(.failure(0), failureThenFailure)
     }
 }
-extension Result: Error { }
 #endif
