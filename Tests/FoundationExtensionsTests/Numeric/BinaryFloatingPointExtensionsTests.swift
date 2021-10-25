@@ -201,4 +201,24 @@ extension BinaryFloatingPointExtensionsTests {
         }
     }
 }
+
+// MARK: - Test `rounded(toPlaces:)`
+
+extension BinaryFloatingPointExtensionsTests {
+    func testRoundedToPlaces() {
+        // given
+        let float = Float(0.33911231291123)
+        let double = Double(0.3349999999999)
+        let float80 = Float80(0.3350000000000000000001)
+
+        // then
+        XCTAssertEqual(0.34, float.rounded(toPlaces: 2))
+        XCTAssertEqual(0.33, double.rounded(toPlaces: 2))
+        XCTAssertEqual(0.34, float80.rounded(toPlaces: 2))
+
+        XCTAssertEqual(0.0, float.rounded(toPlaces: 0))
+        XCTAssertEqual(0.0, double.rounded(toPlaces: 0))
+        XCTAssertEqual(0.0, float80.rounded(toPlaces: 0))
+    }
+}
 #endif

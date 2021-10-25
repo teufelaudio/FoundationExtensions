@@ -83,6 +83,14 @@ extension BinaryFloatingPoint {
             percentage: percentage)
         return interpolation
     }
+
+    /// Rounds a floating point number to n decimal places.
+    /// - Parameter toPlaces: number of decimal places
+    /// - Returns: A floating point number, rounded to n decimal places.
+    public func rounded(toPlaces: UInt) -> Self {
+        let divisor: Self = Self(pow(10.0, Double(toPlaces)))
+        return (self * divisor).rounded() / divisor
+    }
 }
 
 // MARK: - Interpolation & Progress for Integers
