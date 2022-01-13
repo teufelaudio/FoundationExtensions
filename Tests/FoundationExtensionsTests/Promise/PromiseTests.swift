@@ -231,6 +231,89 @@ extension PromiseTests {
         subject3.send("p3")
         waiter()
     }
+
+    func testValidStatusCodeWithIncorrectURLResponse() {
+        let promise = Publishers.Promise<(data: Data, response: URLResponse), URLError>
+            .init(value: (data: Data(), response: URLResponse()))
+            .validStatusCode()
+
+        let waiter = assert(publisher: promise, completesWithoutValues: .failedWithError { urlError in
+            urlError.code == .badServerResponse
+        }, timeout: 0.1)
+        waiter()
+    }
+
+    func testValidStatusCodeWithStatus400() {
+        let response = HTTPURLResponse(
+            url: URL(string: "https://teufel.de")!,
+            statusCode: 400,
+            httpVersion: nil,
+            headerFields: nil
+        )!
+
+        let promise = Publishers.Promise<(data: Data, response: URLResponse), URLError>
+            .init(value: (data: Data(), response: response))
+            .validStatusCode()
+
+        let waiter = assert(publisher: promise, completesWithoutValues: .failedWithError { urlError in
+            urlError.code == .badServerResponse
+        }, timeout: 0.1)
+        waiter()
+    }
+
+    func testValidStatusCodeWithStatus200() {
+        let response = HTTPURLResponse(
+            url: URL(string: "https://teufel.de")!,
+            statusCode: 200,
+            httpVersion: nil,
+            headerFields: nil
+        )!
+
+        let promise = Publishers.Promise<(data: Data, response: URLResponse), URLError>
+            .init(value: (data: Data(), response: response))
+            .validStatusCode()
+
+        let waiter = assert(publisher: promise, eventuallyReceives: [()], validatingOutput: { _, _ in true }, andCompletes: true, timeout: 0.1)
+        waiter()
+    }
+
+    func testRetryForeverEventuallySucceeds() {
+        var count = 0
+        let promiseThatSucceedsAfter10Attempts = Publishers.Promise<String, AnyError>.init { completion in
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(5)) {
+                if count < 10 {
+                    completion(.failure(AnyError()))
+                    count += 1
+                } else {
+                    completion(.success("hello"))
+                }
+            }
+            return AnyCancellable { }
+        }.retry()
+
+        let waiter = assert(publisher: promiseThatSucceedsAfter10Attempts,
+                            eventuallyReceives: "hello",
+                            andCompletes: true,
+                            timeout: 0.1)
+        waiter()
+    }
+
+    func testRetryForeverWithTimeout() {
+        let promiseThatSucceedsAfter10Attempts = Publishers.Promise<String, AnyError> { completion in
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(5)) {
+                completion(.failure(AnyError()))
+            }
+            return AnyCancellable { }
+        }
+        .retry()
+        .setFailureType(to: AnyError.self)
+        .timeout(.milliseconds(50), scheduler: DispatchQueue.main, customError: { AnyError() })
+
+        let waiter = assert(publisher: promiseThatSucceedsAfter10Attempts,
+                            completesWithoutValues: .isFailure,
+                            timeout: 0.1)
+        waiter()
+    }
 }
 
 extension XCTestCase {
@@ -241,6 +324,23 @@ extension XCTestCase {
         andCompletes: Bool = false,
         timeout: TimeInterval
     ) -> () -> Void where P.Output: Equatable {
+        assert(
+            publisher: publisher,
+            eventuallyReceives: values,
+            validatingOutput: ==,
+            andCompletes: andCompletes,
+            timeout: timeout
+        )
+    }
+
+    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    public func assert<P: Publisher>(
+        publisher: P,
+        eventuallyReceives values: [P.Output],
+        validatingOutput: @escaping (P.Output, P.Output) -> Bool,
+        andCompletes: Bool = false,
+        timeout: TimeInterval
+    ) -> () -> Void {
         var collectedValues: [P.Output] = []
         let valuesExpectation = expectation(description: "Expected values")
         let completionExpectation = expectation(description: "Expected completion")
@@ -267,7 +367,10 @@ extension XCTestCase {
                 return
             }
             self.wait(for: [valuesExpectation, completionExpectation], timeout: timeout)
-            XCTAssertEqual(collectedValues, values, "Values don't match:\nreceived:\n\(collectedValues)\n\nexpected:\n\(values)")
+            XCTAssertEqual(collectedValues.count, values.count, "Values don't match:\nreceived:\n\(collectedValues)\n\nexpected:\n\(values)")
+            zip(collectedValues, values).forEach { collected, expected in
+                XCTAssertTrue(validatingOutput(collected, expected), "Values don't match:\nreceived:\n\(collectedValues)\n\nexpected:\n\(values)")
+            }
             _ = cancellable
         }
     }
