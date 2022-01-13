@@ -8,7 +8,7 @@ extension Publishers.Promise where Success == (data: Data, response: URLResponse
                 return Publishers.Promise(error: URLError(.badServerResponse))
             }
 
-            return httpResponse.statusCode == 200
+            return (200..<400) ~= httpResponse.statusCode
                 ? Publishers.Promise(value: ())
                 : Publishers.Promise(error: URLError(.badServerResponse))
         }
