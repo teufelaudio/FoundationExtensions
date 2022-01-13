@@ -1,6 +1,8 @@
+#if canImport(Combine)
 import Combine
 import Foundation
 
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Publisher {
     public func retry() -> AnyPublisher<Output, Never> {
         Publishers
@@ -11,6 +13,7 @@ extension Publisher {
     }
 }
 
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Publishers.Promise {
     public func retry() -> Publishers.Promise<Output, Never> {
         Publishers
@@ -23,3 +26,4 @@ extension Publishers.Promise {
                                      // with success, therefore, with one value.
     }
 }
+#endif
