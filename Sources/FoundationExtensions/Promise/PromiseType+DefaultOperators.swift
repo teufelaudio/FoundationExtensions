@@ -63,19 +63,34 @@ extension PromiseType {
         Publishers.Promise { self.eraseToAnyPublisher().print(prefix, to: stream) }
     }
 
-    public func flatMapResult<T>(maxPublishers: Subscribers.Demand = .unlimited, _ transform: @escaping (Output) -> Result<T, Failure>) -> Publishers.Promise<T, Failure> {
-        Publishers.Promise { self.eraseToAnyPublisher().flatMapResult(maxPublishers: maxPublishers, transform) }
+    public func flatMapResult<T>(_ transform: @escaping (Output) -> Result<T, Failure>) -> Publishers.Promise<T, Failure> {
+        Publishers.Promise { self.eraseToAnyPublisher().flatMapResult(transform) }
     }
 
-    public func flatMap<O>(maxPublishers: Subscribers.Demand = .unlimited, _ transform: @escaping (Output) -> Publishers.Promise<O, Never>) -> Publishers.Promise<O, Failure> {
+    public func flatMap<O>(_ transform: @escaping (Output) -> Publishers.Promise<O, Never>) -> Publishers.Promise<O, Failure> {
+        Publishers.Promise { self.eraseToAnyPublisher().flatMapLatest { transform($0).setFailureType(to: Failure.self) } }
+    }
+
+    public func flatMap<O, E: Error>(_ transform: @escaping (Output) -> Publishers.Promise<O, E>) -> Publishers.Promise<O, E> where Failure == Never {
+        Publishers.Promise { self.eraseToAnyPublisher().setFailureType(to: E.self).flatMapLatest(transform) }
+    }
+
+    public func flatMap<O>(_ transform: @escaping (Output) -> Publishers.Promise<O, Failure>) -> Publishers.Promise<O, Failure> {
+        Publishers.Promise { self.eraseToAnyPublisher().flatMapLatest(transform) }
+    }
+
+    @available(*, deprecated, message: "Please use the function without providing maxPublishers, as the original Combine FlatMap may have some issues when returning error.")
+    public func flatMap<O>(maxPublishers: Subscribers.Demand, _ transform: @escaping (Output) -> Publishers.Promise<O, Never>) -> Publishers.Promise<O, Failure> {
         Publishers.Promise { self.eraseToAnyPublisher().flatMap(maxPublishers: maxPublishers) { transform($0).setFailureType(to: Failure.self) } }
     }
 
-    public func flatMap<O, E: Error>(maxPublishers: Subscribers.Demand = .unlimited, _ transform: @escaping (Output) -> Publishers.Promise<O, E>) -> Publishers.Promise<O, E> where Failure == Never {
+    @available(*, deprecated, message: "Please use the function without providing maxPublishers, as the original Combine FlatMap may have some issues when returning error.")
+    public func flatMap<O, E: Error>(maxPublishers: Subscribers.Demand, _ transform: @escaping (Output) -> Publishers.Promise<O, E>) -> Publishers.Promise<O, E> where Failure == Never {
         Publishers.Promise { self.eraseToAnyPublisher().setFailureType(to: E.self).flatMap(maxPublishers: maxPublishers, transform) }
     }
 
-    public func flatMap<O>(maxPublishers: Subscribers.Demand = .unlimited, _ transform: @escaping (Output) -> Publishers.Promise<O, Failure>) -> Publishers.Promise<O, Failure> {
+    @available(*, deprecated, message: "Please use the function without providing maxPublishers, as the original Combine FlatMap may have some issues when returning error.")
+    public func flatMap<O>(maxPublishers: Subscribers.Demand, _ transform: @escaping (Output) -> Publishers.Promise<O, Failure>) -> Publishers.Promise<O, Failure> {
         Publishers.Promise { self.eraseToAnyPublisher().flatMap(maxPublishers: maxPublishers, transform) }
     }
 

@@ -13,10 +13,9 @@ import Foundation
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Publisher {
     public func flatMapResult<T>(
-        maxPublishers: Subscribers.Demand = .unlimited,
         _ transform: @escaping (Self.Output) -> Result<T, Failure>
-    ) -> Publishers.FlatMap<Result<T, Failure>.Publisher, Self> {
-        flatMap(maxPublishers: maxPublishers) { value in
+    ) -> Publishers.FlatMapLatest<Self, Result<T, Failure>.Publisher> {
+        flatMapLatest { value in
             transform(value).publisher
         }
     }
