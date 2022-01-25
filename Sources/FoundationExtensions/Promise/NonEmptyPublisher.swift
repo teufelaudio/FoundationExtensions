@@ -34,7 +34,7 @@ public struct NonEmptyPublisher<Upstream: Publisher>: Publisher {
         upstream
             .map(EmptyStream.someValue)
             .replaceEmpty(with: EmptyStream.empty)
-            .flatMap { valueType -> AnyPublisher<Output, Failure> in
+            .flatMapLatest { valueType -> AnyPublisher<Output, Failure> in
                 switch valueType {
                 case .empty:
                     switch fallback() {

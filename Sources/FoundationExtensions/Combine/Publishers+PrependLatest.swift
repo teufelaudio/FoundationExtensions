@@ -13,7 +13,7 @@ import Combine
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Publishers.CombineLatest {
     public func prependLatest<P: Publisher>(_ publisher: P) -> AnyPublisher<Output, Failure> where P.Output == Output, P.Failure == Failure {
-        publisher.flatMap { left, right in
+        publisher.flatMapLatest { left, right in
             Publishers.CombineLatest(
                 self.a.prepend(left),
                 self.b.prepend(right)
