@@ -1,6 +1,8 @@
+#if canImport(Combine)
 import Combine
 import Foundation
 
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Publishers {
     /// Same as Publishers.FlatMap, but it cancels the upstream in case the flatMap block finishes with error.
     public struct FlatMapEx<Upstream: Publisher, Downstream: Publisher>: Publisher where Upstream.Failure == Downstream.Failure {
@@ -29,6 +31,7 @@ extension Publishers {
     }
 }
 
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Publisher {
     /// Same as Publishers.FlatMap, but it cancels the upstream in case the flatMap block finishes with error.
     public func flatMapEx<Downstream: Publisher>(_ transform: @escaping (Output) -> Downstream) -> Publishers.FlatMapEx<Self, Downstream>
@@ -36,3 +39,4 @@ extension Publisher {
         .init(self, transform)
     }
 }
+#endif
