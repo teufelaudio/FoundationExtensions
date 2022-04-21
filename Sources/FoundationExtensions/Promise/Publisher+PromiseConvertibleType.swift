@@ -44,21 +44,21 @@ extension Publisher {
     }
 
     public func assertNonEmptyPromise() -> Publishers.Promise<Output, Failure> {
-        self.nonEmpty(fallback: { fatalError("Empty promise, asserting it non-empty") }).promise
+        NonEmptyPublisher.unsafe(nonEmptyUpstream: self).promise
     }
 }
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Just: PromiseConvertibleType {
     public var promise: Publishers.Promise<Output, Failure> {
-        Publishers.Promise { self }
+        Publishers.Promise.unsafe { self }
     }
 }
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Fail: PromiseConvertibleType {
     public var promise: Publishers.Promise<Output, Failure> {
-        Publishers.Promise { self }
+        Publishers.Promise.unsafe { self }
     }
 }
 
@@ -72,28 +72,28 @@ extension Result: PromiseConvertibleType {
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Publishers.ReplaceEmpty: PromiseConvertibleType {
     public var promise: Publishers.Promise<Output, Failure> {
-        Publishers.Promise { self }
+        Publishers.Promise.unsafe { self }
     }
 }
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Result.Publisher: PromiseConvertibleType {
     public var promise: Publishers.Promise<Success, Failure> {
-        Publishers.Promise { self }
+        Publishers.Promise.unsafe { self }
     }
 }
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Future: PromiseConvertibleType {
     public var promise: Publishers.Promise<Output, Failure> {
-        Publishers.Promise { self }
+        Publishers.Promise.unsafe { self }
     }
 }
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension URLSession.DataTaskPublisher {
     public var promise: Publishers.Promise<Output, Failure> {
-        Publishers.Promise { self }
+        Publishers.Promise.unsafe { self }
     }
 }
 #endif

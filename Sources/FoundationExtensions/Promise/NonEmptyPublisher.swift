@@ -52,10 +52,18 @@ public struct NonEmptyPublisher<Upstream: Publisher>: Publisher {
 }
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-extension NonEmptyPublisher where Upstream: PromiseType {
-    public init(upstream: Upstream) {
-        self.upstream = upstream
-        self.fallback = { fatalError() }
+extension NonEmptyPublisher {
+    internal static func unsafe(nonEmptyUpstream: Upstream) -> Self {
+        NonEmptyPublisher(
+            upstream: nonEmptyUpstream,
+            onEmpty: {
+                fatalError("""
+                Upstream Publisher completed empty, which is not an expected behaviour.
+                Type: \(Upstream.self)
+                Instance: \(nonEmptyUpstream)
+                """)
+            }
+        )
     }
 }
 #endif

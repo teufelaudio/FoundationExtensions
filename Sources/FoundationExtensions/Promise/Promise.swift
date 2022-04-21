@@ -42,13 +42,7 @@ extension Publishers {
         /// and its creation will be deferred until there's some positive demand from the downstream.
         /// - Parameter upstream: a closure that creates an upstream publisher. This is an closure, so creation will be deferred.
         public init<P: Publisher>(_ upstream: @escaping () -> NonEmptyPublisher<P>) where P.Output == Success, P.Failure == Failure {
-            self.init(upstreamUncheckedForEmptiness: upstream)
-        }
-
-        // https://www.fivestars.blog/articles/disfavoredOverload/
-        @_disfavoredOverload
-        internal init<P: Publisher>(upstreamUncheckedForEmptiness upstream: @escaping () -> P) where P.Output == Success, P.Failure == Failure {
-            self.operation = { sinkNotification in
+            operation = { sinkNotification in
                 upstream()
                     .first()
                     .sink(
@@ -56,6 +50,11 @@ extension Publishers {
                         receiveValue: sinkNotification.receiveValue
                     )
             }
+        }
+
+        internal static func unsafe<P: Publisher>(upstreamUncheckedForEmptiness upstream: @escaping () -> P) -> Self
+        where P.Output == Success, P.Failure == Failure {
+            .init { NonEmptyPublisher.unsafe(nonEmptyUpstream: upstream()) }
         }
 
         public init(_ promise: @escaping () -> Promise<Success, Failure>)  {

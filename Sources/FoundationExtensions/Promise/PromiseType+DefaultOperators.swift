@@ -26,19 +26,19 @@ import Foundation
 // can't ensure anymore that it will be NonEmpty. So this must be evaluated case by case.
 extension PromiseType {
     public func map<T>(_ transform: @escaping (Output) -> T) -> Publishers.Promise<T, Failure> {
-        Publishers.Promise { self.eraseToAnyPublisher().map(transform) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().map(transform) }
     }
 
     public func tryMap<T>(_ transform: @escaping (Output) throws -> T) -> Publishers.Promise<T, Error> {
-        Publishers.Promise { self.eraseToAnyPublisher().tryMap(transform) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().tryMap(transform) }
     }
 
     public func mapError<E: Error>(_ transform: @escaping (Failure) -> E) -> Publishers.Promise<Output, E> {
-        Publishers.Promise { self.eraseToAnyPublisher().mapError(transform) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().mapError(transform) }
     }
 
     public func `catch`<F: Error>(_ handler: @escaping (Failure) -> Publishers.Promise<Output, F>) -> Publishers.Promise<Output, F> {
-        Publishers.Promise { self.eraseToAnyPublisher().catch(handler) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().catch(handler) }
     }
 
     public func handleEvents(
@@ -48,7 +48,7 @@ extension PromiseType {
         receiveCancel: (() -> Void)? = nil,
         receiveRequest: ((Subscribers.Demand) -> Void)? = nil)
     -> Publishers.Promise<Output, Failure> {
-        Publishers.Promise {
+        Publishers.Promise.unsafe {
             self.eraseToAnyPublisher().handleEvents(
                 receiveSubscription: receiveSubscription,
                 receiveOutput: receiveOutput,
@@ -60,66 +60,66 @@ extension PromiseType {
     }
 
     public func print(_ prefix: String = "", to stream: TextOutputStream? = nil) -> Publishers.Promise<Output, Failure> {
-        Publishers.Promise { self.eraseToAnyPublisher().print(prefix, to: stream) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().print(prefix, to: stream) }
     }
 
     public func flatMapResult<T>(_ transform: @escaping (Output) -> Result<T, Failure>) -> Publishers.Promise<T, Failure> {
-        Publishers.Promise { self.eraseToAnyPublisher().flatMapResult(transform) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().flatMapResult(transform) }
     }
 
     public func flatMap<O>(_ transform: @escaping (Output) -> Publishers.Promise<O, Never>) -> Publishers.Promise<O, Failure> {
-        Publishers.Promise { self.eraseToAnyPublisher().flatMapLatest { transform($0).setFailureType(to: Failure.self) } }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().flatMapLatest { transform($0).setFailureType(to: Failure.self) } }
     }
 
     public func flatMap<O, E: Error>(_ transform: @escaping (Output) -> Publishers.Promise<O, E>) -> Publishers.Promise<O, E> where Failure == Never {
-        Publishers.Promise { self.eraseToAnyPublisher().setFailureType(to: E.self).flatMapLatest(transform) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().setFailureType(to: E.self).flatMapLatest(transform) }
     }
 
     public func flatMap<O>(_ transform: @escaping (Output) -> Publishers.Promise<O, Failure>) -> Publishers.Promise<O, Failure> {
-        Publishers.Promise { self.eraseToAnyPublisher().flatMapLatest(transform) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().flatMapLatest(transform) }
     }
 
     @available(*, deprecated, message: "Please use the function without providing maxPublishers, as the original Combine FlatMap may have some issues when returning error.")
     public func flatMap<O>(maxPublishers: Subscribers.Demand, _ transform: @escaping (Output) -> Publishers.Promise<O, Never>) -> Publishers.Promise<O, Failure> {
-        Publishers.Promise { self.eraseToAnyPublisher().flatMap(maxPublishers: maxPublishers) { transform($0).setFailureType(to: Failure.self) } }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().flatMap(maxPublishers: maxPublishers) { transform($0).setFailureType(to: Failure.self) } }
     }
 
     @available(*, deprecated, message: "Please use the function without providing maxPublishers, as the original Combine FlatMap may have some issues when returning error.")
     public func flatMap<O, E: Error>(maxPublishers: Subscribers.Demand, _ transform: @escaping (Output) -> Publishers.Promise<O, E>) -> Publishers.Promise<O, E> where Failure == Never {
-        Publishers.Promise { self.eraseToAnyPublisher().setFailureType(to: E.self).flatMap(maxPublishers: maxPublishers, transform) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().setFailureType(to: E.self).flatMap(maxPublishers: maxPublishers, transform) }
     }
 
     @available(*, deprecated, message: "Please use the function without providing maxPublishers, as the original Combine FlatMap may have some issues when returning error.")
     public func flatMap<O>(maxPublishers: Subscribers.Demand, _ transform: @escaping (Output) -> Publishers.Promise<O, Failure>) -> Publishers.Promise<O, Failure> {
-        Publishers.Promise { self.eraseToAnyPublisher().flatMap(maxPublishers: maxPublishers, transform) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().flatMap(maxPublishers: maxPublishers, transform) }
     }
 
     public func contains(_ output: Output) -> Publishers.Promise<Bool, Failure> where Output: Equatable {
-        Publishers.Promise { self.eraseToAnyPublisher().contains(output) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().contains(output) }
     }
 
     public func allSatisfy(_ predicate: @escaping (Output) -> Bool) -> Publishers.Promise<Bool, Failure> {
-        Publishers.Promise { self.eraseToAnyPublisher().allSatisfy(predicate) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().allSatisfy(predicate) }
     }
 
     public func tryAllSatisfy(_ predicate: @escaping (Output) throws -> Bool) -> Publishers.Promise<Bool, Error> {
-        Publishers.Promise { self.eraseToAnyPublisher().tryAllSatisfy(predicate) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().tryAllSatisfy(predicate) }
     }
 
     public func contains(where predicate: @escaping (Output) -> Bool) -> Publishers.Promise<Bool, Failure> {
-        Publishers.Promise { self.eraseToAnyPublisher().contains(where: predicate) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().contains(where: predicate) }
     }
 
     public func tryContains(where predicate: @escaping (Output) throws -> Bool) -> Publishers.Promise<Bool, Error> {
-        Publishers.Promise { self.eraseToAnyPublisher().tryContains(where: predicate) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().tryContains(where: predicate) }
     }
 
     public func collect() -> Publishers.Promise<[Output], Failure> {
-        Publishers.Promise { self.eraseToAnyPublisher().collect() }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().collect() }
     }
 
     public func count() -> Publishers.Promise<Int, Failure> {
-        Publishers.Promise { self.eraseToAnyPublisher().count() }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().count() }
     }
 
     public func first() -> Self { self }
@@ -127,28 +127,19 @@ extension PromiseType {
     public func last() -> Self { self }
 
     public func replaceError(with output: Output) -> Publishers.Promise<Output, Never> {
-        Publishers.Promise { self.eraseToAnyPublisher().replaceError(with: output) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().replaceError(with: output) }
     }
 
     public func replaceEmpty(with output: Output) -> Publishers.Promise<Output, Failure> {
-        Publishers.Promise { self.eraseToAnyPublisher().replaceEmpty(with: output) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().replaceEmpty(with: output) }
     }
-
 
     public func retry(_ times: Int) -> Publishers.Promise<Output, Failure> {
-        Publishers.Promise { self.eraseToAnyPublisher().retry(times) }
-    }
-
-    public func scan<T>(_ initialResult: T, _ nextPartialResult: @escaping (T, Output) -> T) -> Publishers.Promise<T, Failure> {
-        Publishers.Promise { self.eraseToAnyPublisher().scan(initialResult, nextPartialResult) }
-    }
-
-    public func tryScan<T>(_ initialResult: T, _ nextPartialResult: @escaping (T, Output) throws -> T) -> Publishers.Promise<T, Error> {
-        Publishers.Promise { self.eraseToAnyPublisher().tryScan(initialResult, nextPartialResult) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().retry(times) }
     }
 
     public func setFailureType<E: Error>(to failureType: E.Type) -> Publishers.Promise<Output, E> where Failure == Never {
-        Publishers.Promise { self.eraseToAnyPublisher().setFailureType(to: failureType) }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().setFailureType(to: failureType) }
     }
 
     public func delay<S: Scheduler>(
@@ -157,23 +148,12 @@ extension PromiseType {
         scheduler: S,
         options: S.SchedulerOptions? = nil
     ) -> Publishers.Promise<Output, Failure> {
-        Publishers.Promise { self.eraseToAnyPublisher().delay(for: interval, tolerance: tolerance, scheduler: scheduler, options: options) }
-    }
-
-    public func timeout<S>(
-        _ interval: S.SchedulerTimeType.Stride,
-        scheduler: S,
-        options: S.SchedulerOptions? = nil,
-        customError: @escaping () -> Failure
-    ) -> Publishers.Promise<Output, Failure> where S : Scheduler {
-        Publishers.Promise {
-            self.eraseToAnyPublisher().timeout(interval, scheduler: scheduler, options: options, customError: customError)
-        }
+        Publishers.Promise.unsafe { self.eraseToAnyPublisher().delay(for: interval, tolerance: tolerance, scheduler: scheduler, options: options) }
     }
 
     @available(*, deprecated, message: "Don't call .promise in a Promise")
     public var promise: Publishers.Promise<Success, Failure> {
-        self as? Publishers.Promise ?? Publishers.Promise { self }
+        self as? Publishers.Promise ?? Publishers.Promise.unsafe { self }
     }
 }
 #endif
