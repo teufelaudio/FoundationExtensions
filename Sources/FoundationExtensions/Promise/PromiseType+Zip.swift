@@ -24,7 +24,7 @@ extension PromiseType {
     ) -> Publishers.Promise<(P1.Output, P2.Output), Failure>
     where P1.Failure == Failure, P2.Failure == Failure,
           Output == (P1.Output, P2.Output) {
-        Publishers.Promise {
+        Publishers.Promise.unsafe {
             Publishers.Zip(p1, p2)
         }
     }
@@ -44,7 +44,7 @@ extension PromiseType {
     ) -> Publishers.Promise<(P1.Output, P2.Output, P3.Output), Failure>
     where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure,
           Output == (P1.Output, P2.Output, P3.Output) {
-        Publishers.Promise {
+        Publishers.Promise.unsafe {
             Publishers.Zip3(p1, p2, p3)
         }
     }
@@ -66,7 +66,7 @@ extension PromiseType {
     ) -> Publishers.Promise<(P1.Output, P2.Output, P3.Output, P4.Output), Failure>
     where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure, P4.Failure == Failure,
           Output == (P1.Output, P2.Output, P3.Output, P4.Output) {
-        Publishers.Promise {
+        Publishers.Promise.unsafe {
             Publishers.Zip4(p1, p2, p3, p4)
         }
     }
@@ -90,7 +90,7 @@ extension PromiseType {
     ) -> Publishers.Promise<(P1.Output, P2.Output, P3.Output, P4.Output, P5.Output), Failure>
     where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure, P4.Failure == Failure, P5.Failure == Failure,
           Output == (P1.Output, P2.Output, P3.Output, P4.Output, P5.Output) {
-        Publishers.Promise {
+        Publishers.Promise.unsafe {
             Publishers.Zip(
                 Publishers.Zip4(p1, p2, p3, p4),
                 p5
@@ -120,7 +120,7 @@ extension PromiseType {
     ) -> Publishers.Promise<(P1.Output, P2.Output, P3.Output, P4.Output, P5.Output, P6.Output), Failure>
     where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure, P4.Failure == Failure, P5.Failure == Failure, P6.Failure == Failure,
           Output == (P1.Output, P2.Output, P3.Output, P4.Output, P5.Output, P6.Output) {
-        Publishers.Promise {
+        Publishers.Promise.unsafe {
             Publishers.Zip(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip(p5, p6)
@@ -153,7 +153,7 @@ extension PromiseType {
     where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure, P4.Failure == Failure, P5.Failure == Failure, P6.Failure == Failure,
           P7.Failure == Failure,
           Output == (P1.Output, P2.Output, P3.Output, P4.Output, P5.Output, P6.Output, P7.Output) {
-        Publishers.Promise {
+        Publishers.Promise.unsafe {
             Publishers.Zip(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip3(p5, p6, p7)
@@ -189,7 +189,7 @@ extension PromiseType {
     where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure, P4.Failure == Failure, P5.Failure == Failure, P6.Failure == Failure,
           P7.Failure == Failure, P8.Failure == Failure,
           Output == (P1.Output, P2.Output, P3.Output, P4.Output, P5.Output, P6.Output, P7.Output, P8.Output) {
-        Publishers.Promise {
+        Publishers.Promise.unsafe {
             Publishers.Zip(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip4(p5, p6, p7, p8)
@@ -227,7 +227,7 @@ extension PromiseType {
     where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure, P4.Failure == Failure, P5.Failure == Failure, P6.Failure == Failure,
           P7.Failure == Failure, P8.Failure == Failure, P9.Failure == Failure,
           Output == (P1.Output, P2.Output, P3.Output, P4.Output, P5.Output, P6.Output, P7.Output, P8.Output, P9.Output) {
-        Publishers.Promise {
+        Publishers.Promise.unsafe {
             Publishers.Zip3(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip4(p5, p6, p7, p8),
@@ -268,7 +268,7 @@ extension PromiseType {
     where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure, P4.Failure == Failure, P5.Failure == Failure, P6.Failure == Failure,
           P7.Failure == Failure, P8.Failure == Failure, P9.Failure == Failure, P10.Failure == Failure,
           Output == (P1.Output, P2.Output, P3.Output, P4.Output, P5.Output, P6.Output, P7.Output, P8.Output, P9.Output, P10.Output) {
-        Publishers.Promise {
+        Publishers.Promise.unsafe {
             Publishers.Zip3(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip4(p5, p6, p7, p8),
@@ -312,7 +312,7 @@ extension PromiseType {
     where P1.Failure == Failure, P2.Failure == Failure, P3.Failure == Failure, P4.Failure == Failure, P5.Failure == Failure, P6.Failure == Failure,
           P7.Failure == Failure, P8.Failure == Failure, P9.Failure == Failure, P10.Failure == Failure, P11.Failure == Failure,
           Output == (P1.Output, P2.Output, P3.Output, P4.Output, P5.Output, P6.Output, P7.Output, P8.Output, P9.Output, P10.Output, P11.Output) {
-        Publishers.Promise {
+        Publishers.Promise.unsafe {
             Publishers.Zip3(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip4(p5, p6, p7, p8),
@@ -360,7 +360,7 @@ extension PromiseType {
           P12.Failure == Failure,
           Output == (P1.Output, P2.Output, P3.Output, P4.Output, P5.Output, P6.Output, P7.Output, P8.Output, P9.Output, P10.Output, P11.Output,
                      P12.Output) {
-        Publishers.Promise {
+        Publishers.Promise.unsafe {
             Publishers.Zip3(
                 Publishers.Zip4(p1, p2, p3, p4),
                 Publishers.Zip4(p5, p6, p7, p8),
