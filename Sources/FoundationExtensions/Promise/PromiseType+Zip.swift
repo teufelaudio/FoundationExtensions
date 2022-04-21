@@ -24,7 +24,7 @@ extension PromiseType {
     ) -> Publishers.Promise<(P1.Output, P2.Output), Failure>
     where P1.Failure == Failure, P2.Failure == Failure,
           Output == (P1.Output, P2.Output) {
-              Publishers.Promise.unsafe {
+        Publishers.Promise.unsafe {
             Publishers.Zip(p1, p2)
         }
     }
