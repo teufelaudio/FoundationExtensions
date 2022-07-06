@@ -34,5 +34,14 @@ class DataExtensionsTests: XCTestCase {
         let partialData = fullData.range(start: 4, length: 1)
         XCTAssertEqual(partialData, Data([]))
     }
+
+    func testDataFromHexString() {
+        let sut = Data(hex: "6949efc9cf1a68a772af811bca5250bb744aac7c")!
+        XCTAssertEqual(sut, Data([0x69, 0x49, 0xef, 0xc9,
+                                  0xcf, 0x1a, 0x68, 0xa7,
+                                  0x72, 0xaf, 0x81, 0x1b,
+                                  0xca, 0x52, 0x50, 0xbb,
+                                  0x74, 0x4a, 0xac, 0x7c]))
+    }
 }
 #endif
