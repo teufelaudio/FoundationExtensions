@@ -11,7 +11,9 @@ import Foundation
 // sourcery: AutoMockable
 public protocol FileManagerProtocol {
     func urls(for directory: FileManager.SearchPathDirectory, in domainMask: FileManager.SearchPathDomainMask) -> [URL]
+    #if !os(Linux)
     func containerURL(forSecurityApplicationGroupIdentifier groupIdentifier: String) -> URL?
+    #endif
     func contentsOfDirectory(at url: URL,
                              includingPropertiesForKeys keys: [URLResourceKey]?,
                              options mask: FileManager.DirectoryEnumerationOptions) throws -> [URL]
@@ -41,10 +43,12 @@ extension FileManagerProtocol {
             .toResult(orError: FileManagerError.specialFolderNotFound(folder))
     }
 
+    #if !os(Linux)
     public func groupFolder(group: String) -> Result<URL, FileManagerError> {
         return containerURL(forSecurityApplicationGroupIdentifier: group)
             .toResult(orError: FileManagerError.groupFolderNotFound(groupName: group))
     }
+    #endif
 
     public func contents(of parentFolder: URL) -> Result<[URL], FileManagerError> {
         return Result(catching: { try contentsOfDirectory(at: parentFolder, includingPropertiesForKeys: nil, options: []) })

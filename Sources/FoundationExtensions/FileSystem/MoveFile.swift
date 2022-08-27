@@ -1,6 +1,8 @@
 // Copyright © 2021 Lautsprecher Teufel GmbH. All rights reserved.
 
+#if canImport(Combine)
 import Combine
+#endif
 import Foundation
 
 public struct MoveFile {
@@ -14,12 +16,14 @@ public struct MoveFile {
         _run(origin, destination, replace)
     }
 
+#if canImport(Combine)
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func async(from origin: URL, into destination: URL, replace: Bool = false, on queue: DispatchQueue) -> Publishers.Promise<Void, Error> {
         .perform(in: queue) {
             _run(origin, destination, replace)
         }
     }
+#endif
 }
 
 extension MoveFile {

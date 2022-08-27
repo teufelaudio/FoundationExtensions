@@ -2,5 +2,9 @@
 // DO NOT EDIT
 
 
+#if canImport(Foundation)
 import Foundation
+#endif
+#if canImport(Combine)
 import Combine
+#endif

@@ -6,6 +6,7 @@
 //  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
 //
 
+#if canImport(CoreGraphics)
 import CoreGraphics
 
 // MARK: - Helper for transforming to other types
@@ -23,3 +24,5 @@ extension CGSize {
         max(width, height)
     }
 }
+
+#endif

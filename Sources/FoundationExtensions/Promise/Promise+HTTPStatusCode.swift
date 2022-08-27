@@ -1,3 +1,5 @@
+
+#if canImport(Combine)
 import Combine
 import Foundation
 
@@ -15,3 +17,5 @@ extension Publishers.Promise where Success == (data: Data, response: URLResponse
         }
     }
 }
+
+#endif

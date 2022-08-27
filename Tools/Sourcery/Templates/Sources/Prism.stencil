@@ -1,5 +1,7 @@
 {% for import in argument.imports %}
+#if canImport({{ import }})
 import {{ import }}
+#endif
 {% endfor %}
 {% macro associatedValueName caseAssociatedValue index %}{% if caseAssociatedValue.localName %}{{ caseAssociatedValue.localName }}{% else %}associatedValue{{ index }}{% endif %}{% endmacro %}
 {% macro expandAssociatedValues array %}{% for value in array %}{% call associatedValueName value forloop.counter0 %}{{ ', ' if not forloop.last }}{% endfor %}{% endmacro %}

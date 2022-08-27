@@ -1,6 +1,10 @@
+#if canImport(SwiftUI)
 import SwiftUI
+#endif
 {% for import in argument.imports %}
+#if canImport({{ import }})
 import {{ import }}
+#endif
 {% endfor %}
 
 private class L10nReferenceType { }

@@ -6,6 +6,7 @@
 //  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
 //
 
+#if canImport(CoreGraphics)
 import CoreGraphics
 
 // MARK: - AdditiveArithmetic Conformance
@@ -40,3 +41,5 @@ extension CGPoint {
                 y: y.clamped(to: 0...CGFloat.greatestFiniteMagnitude))
     }
 }
+
+#endif

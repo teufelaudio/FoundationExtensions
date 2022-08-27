@@ -1,5 +1,6 @@
 // Copyright © 2021 Lautsprecher Teufel GmbH. All rights reserved.
 
+#if canImport(CryptoKit)
 import CryptoKit
 import Foundation
 
@@ -22,3 +23,5 @@ extension Data {
         return hash.range(start: 16 - 4, length: 4)
     }
 }
+
+#endif
