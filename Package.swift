@@ -5,12 +5,13 @@ let package = Package(
     name: "FoundationExtensions",
     platforms: [.iOS(.v12), .macOS(.v10_15), .tvOS(.v13), .watchOS(.v6)],
     products: [
-        .library(name: "FoundationExtensions", type: .dynamic, targets: ["FoundationExtensions"]),
-        .library(name: "FoundationExtensionsStatic", targets: ["FoundationExtensions"])
+        .library(name: "FoundationExtensions", targets: ["FoundationExtensions"]),
+        .library(name: "FoundationExtensionsDynamic", type: .dynamic, targets: ["FoundationExtensions"])
     ],
     dependencies: [],
     targets: [
         .target(name: "FoundationExtensions", dependencies: []),
+        .target(name: "FoundationExtensionsDynamic", dependencies: []),
         .testTarget(name: "FoundationExtensionsTests", dependencies: ["FoundationExtensions"])
     ]
 )
