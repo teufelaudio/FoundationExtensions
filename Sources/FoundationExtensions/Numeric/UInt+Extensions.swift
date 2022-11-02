@@ -8,6 +8,6 @@
 
 import Foundation
 
-extension UInt: SignedDescribable {
+extension UInt: SignedStringConvertible {
     public var signedDescription: String? { NSNumber(value: self).signedDescription }
 }
