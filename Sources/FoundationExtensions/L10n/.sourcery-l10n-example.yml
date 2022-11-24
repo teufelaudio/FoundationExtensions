@@ -1,0 +1,12 @@
+sources:
+  include:
+    - Sources/FooBar/Extensions/L10n.swift
+  exclude:
+    - Sources/FooBar/Generated
+templates:
+  - ../Tools/Sourcery/Templates/Localizable.stencil
+output:
+  Sources/FooBar/Generated
+args:
+  imports: ["Foundation"]
+  testable-imports: []
