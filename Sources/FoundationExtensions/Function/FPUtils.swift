@@ -67,4 +67,4 @@ public func mutate<Root, Value>(_ keyPath: WritableKeyPath<Root, Value>) -> (Roo
     }
 }
 
-public func mutate<Root, Value>(module: Root, value: Value, for keyPath: WritableKeyPath<Root, Value>) -> Root { mutate(keyPath)(module, value) }
+public func mutate<Root, Value>(root: Root, value: Value, for keyPath: WritableKeyPath<Root, Value>) -> Root { mutate(keyPath)(root, value) }
