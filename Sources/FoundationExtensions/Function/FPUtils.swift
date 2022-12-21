@@ -59,7 +59,7 @@ public func setter<Root, Value>(_ keyPath: WritableKeyPath<Root, Value>) -> (ino
     }
 }
 
-public func mutate<Root, Value>(_ keyPath: WritableKeyPath<Root, Value>) -> (Root, Value) -> Root {
+public func mutate<Root, Value>(_ keyPath: KeyPath<Root, Value>) -> (Root, Value) -> Root {
     return { root, value in
         var mutableRoot = root
         mutableRoot[keyPath: keyPath] = value
@@ -67,4 +67,4 @@ public func mutate<Root, Value>(_ keyPath: WritableKeyPath<Root, Value>) -> (Roo
     }
 }
 
-public func mutate<Root, Value>(root: Root, value: Value, for keyPath: WritableKeyPath<Root, Value>) -> Root { mutate(keyPath)(root, value) }
+public func mutate<Root, Value>(root: Root, value: Value, for keyPath: KeyPath<Root, Value>) -> Root { mutate(keyPath)(root, value) }
