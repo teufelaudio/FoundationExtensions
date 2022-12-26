@@ -63,5 +63,49 @@ class FunctionalExtensionsTests: XCTestCase {
         // then
         XCTAssertEqual(expectedArrayCompacted, arrayCompacted)
     }
+
+    func testMutateForMultipleProperties() {
+        // given
+        struct MutableValue: Equatable {
+            var value1: String = ""
+            var value2: Int = 0
+            var value3: Date = .init(timeIntervalSince1970: 100)
+        }
+        let immutableValue: MutableValue = .init()
+        let expectedValue: MutableValue = .init(value1: "TestResult",
+                                                value2: 999,
+                                                value3: .init(timeIntervalSince1970: 9999))
+
+        // when
+        let mutatedVersionOfValue = mutate(root: immutableValue) {
+            $0.value1 = "TestResult"
+            $0.value2 = 999
+            $0.value3 = .init(timeIntervalSince1970: 9999)
+        }
+
+        // then
+        XCTAssertEqual(expectedValue, mutatedVersionOfValue)
+    }
+
+    func testMutateForOneProperty() {
+        // given
+        struct MutableValue: Equatable {
+            var value1: String = ""
+            var value2: Int = 0
+            var value3: Date = .init(timeIntervalSince1970: 100)
+        }
+        let immutableValue: MutableValue = .init()
+        let expectedValue: MutableValue = .init(value1: "",
+                                                value2: 15,
+                                                value3: .init(timeIntervalSince1970: 100))
+
+        // when
+        let mutatedVersionOfValue = mutate(root: immutableValue,
+                                           with: 15,
+                                           for: \.value2)
+
+        // then
+        XCTAssertEqual(expectedValue, mutatedVersionOfValue)
+    }
 }
 #endif
