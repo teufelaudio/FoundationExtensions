@@ -85,6 +85,49 @@ extension Publishers {
                 .receive(subscriber: subscriber)
         }
     }
+    
+    public struct CombineLatest7<A, B, C, D, E, F, G>: Publisher where A: Publisher,
+                                                                       B: Publisher,
+                                                                       C: Publisher,
+                                                                       D: Publisher,
+                                                                       E: Publisher,
+                                                                       F: Publisher,
+                                                                       G: Publisher,
+                                                                       A.Failure == B.Failure,
+                                                                       B.Failure == C.Failure,
+                                                                       C.Failure == D.Failure,
+                                                                       D.Failure == E.Failure,
+                                                                       E.Failure == F.Failure,
+                                                                       F.Failure == G.Failure{
+        public typealias Output = (A.Output, B.Output, C.Output, D.Output, E.Output, F.Output, G.Output)
+        public typealias Failure = A.Failure
+
+        let a: A
+        let b: B
+        let c: C
+        let d: D
+        let e: E
+        let f: F
+        let g: G
+
+        public init(_ a: A, _ b: B, _ c: C, _ d: D, _ e: E, _ f: F, _ g: G) {
+            self.a = a
+            self.b = b
+            self.c = c
+            self.d = d
+            self.e = e
+            self.f = f
+            self.g = g
+        }
+
+        public func receive<S>(subscriber: S) where S : Subscriber, Failure == S.Failure, Output == S.Input {
+            Publishers.CombineLatest(Publishers.CombineLatest6(a, b, c, d, e, f), g)
+                .map { (abcdefTuple, gOutput) in
+                    (abcdefTuple.0, abcdefTuple.1, abcdefTuple.2, abcdefTuple.3, abcdefTuple.4, abcdefTuple.5, gOutput)
+                }
+                .receive(subscriber: subscriber)
+        }
+    }
 }
 
 #endif
