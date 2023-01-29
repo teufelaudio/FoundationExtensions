@@ -18,3 +18,10 @@ extension String {
         }
     }
 }
+
+extension String {
+    /// - Returns: `nil` if `isEmpty` is `true`, else returns `String`.
+    public var nilOutIfEmpty: Self? {
+        isEmpty ? nil : self
+    }
+}

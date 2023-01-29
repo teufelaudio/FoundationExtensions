@@ -16,5 +16,29 @@ class StringExtensionsTest: XCTestCase {
         XCTAssertEqual("a", "a".leftPadding(toLength: 1, withPad: "0")) // no padding
         XCTAssertEqual("acab", "acab".leftPadding(toLength: 3, withPad: "0")) // no truncation
     }
+
+    func testNilOutIfEmptyWhenStringIsEmptyReturnsNil() {
+        // given
+        let value: String = ""
+        let expectedResult: String? = nil
+
+        // when
+        let sut = value.nilOutIfEmpty
+
+        // then
+        XCTAssertEqual(expectedResult, sut)
+    }
+
+    func testNilOutIfEmptyWhenStringIsNotEmptyReturnsString() {
+        // given
+        let value: String = "abc"
+        let expectedResult: String? = "abc"
+
+        // when
+        let sut = value.nilOutIfEmpty
+
+        // then
+        XCTAssertEqual(expectedResult, sut)
+    }
 }
 #endif
