@@ -240,5 +240,41 @@ extension OptionalExtensionTests {
         // then
         XCTAssertEqual(expectedResult, sut)
     }
+
+    func testNilOutIfEmptyWhenStringIsEmptyReturnsNil() {
+        // given
+        let optional: String? = ""
+        let expectedResult: String? = nil
+
+        // when
+        let sut = optional?.nilOutIfEmpty
+
+        // then
+        XCTAssertEqual(expectedResult, sut)
+    }
+
+    func testNilOutIfEmptyWhenStringIsNotEmptyReturnsString() {
+        // given
+        let optional: String? = "abc"
+        let expectedResult: String? = "abc"
+
+        // when
+        let sut = optional?.nilOutIfEmpty
+
+        // then
+        XCTAssertEqual(expectedResult, sut)
+    }
+
+    func testNilOutIfEmptyWhenStringIsNilReturnsNil() {
+        // given
+        let optional: String? = nil
+        let expectedResult: String? = nil
+
+        // when
+        let sut = optional?.nilOutIfEmpty
+
+        // then
+        XCTAssertEqual(expectedResult, sut)
+    }
 }
 #endif

@@ -14,6 +14,13 @@ extension Optional where Wrapped: Collection {
     }
 }
 
+extension Optional where Wrapped == String {
+    /// - Returns: `nil` if `isEmpty` is `true` or value is `nil`, else returns `String`.
+    public var nilOutIfEmpty: Self {
+        flatMap { $0.nilOutIfEmpty }
+    }
+}
+
 extension Optional {
     typealias Generic<A> = A?
 
