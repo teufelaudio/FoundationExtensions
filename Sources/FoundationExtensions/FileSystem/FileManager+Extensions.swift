@@ -1,10 +1,4 @@
-//
-//  FileManager+Extensions.swift
-//  FoundationExtensions
-//
-//  Created by Luiz Barbosa on 07.12.18.
-//  Copyright © 2018 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 import Foundation
 

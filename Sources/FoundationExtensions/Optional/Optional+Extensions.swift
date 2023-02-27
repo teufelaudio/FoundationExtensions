@@ -1,10 +1,4 @@
-//
-//  Optional+Extensions.swift
-//  FoundationExtensions
-//
-//  Created by Luiz Barbosa on 14.09.18.
-//  Copyright © 2018 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 extension Optional where Wrapped: Collection {
 

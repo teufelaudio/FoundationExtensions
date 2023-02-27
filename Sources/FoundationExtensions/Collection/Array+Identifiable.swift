@@ -1,10 +1,4 @@
-//
-//  Array+Identifiable.swift
-//  FoundationExtensions
-//
-//  Created by Luiz Barbosa on 29.05.20.
-//  Copyright © 2018 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Array where Element: Identifiable {

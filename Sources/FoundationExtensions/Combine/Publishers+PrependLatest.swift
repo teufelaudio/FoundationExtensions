@@ -1,10 +1,4 @@
-//
-//  Publishers+PrependLatest.swift
-//  FoundationExtensions
-//
-//  Created by Thomas Mellenthin on 22.07.20.
-//  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 #if canImport(Combine)
 import Foundation

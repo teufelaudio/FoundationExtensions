@@ -1,10 +1,4 @@
-//
-//  Publisher+FlatMapResult.swift
-//  FoundationExtensions
-//
-//  Created by Luiz Barbosa on 03.06.20.
-//  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 #if canImport(Combine)
 import Combine

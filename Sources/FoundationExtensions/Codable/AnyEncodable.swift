@@ -1,10 +1,4 @@
-//
-//  AnyEncodable.swift
-//  FoundationExtensions
-//
-//  Created by Luiz Barbosa on 18.07.18.
-//  Copyright © 2018 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 /// Type-erasure for Encodable type
 public struct AnyEncodable: Encodable {

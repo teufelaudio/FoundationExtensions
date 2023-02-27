@@ -1,10 +1,4 @@
-//
-//  String+Extensions.swift
-//  FoundationExtensions
-//
-//  Created by Thomas Mellenthin on 28.01.20.
-//  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 import Foundation
 

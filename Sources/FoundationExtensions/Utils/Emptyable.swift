@@ -1,10 +1,4 @@
-//
-//  Emptyable.swift
-//  FoundationExtensions
-//
-//  Created by Luis Reisewitz on 07.02.20.
-//  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 public protocol Emptyable {
     /// Should return an empty version of itself.

@@ -1,10 +1,4 @@
-//
-//  Array+Extensions.swift
-//  FoundationExtensions
-//
-//  Created by Luiz Barbosa on 21.08.18.
-//  Copyright © 2018 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 extension Array {
     /// Convenient way to call static functions without having to provide the generic type

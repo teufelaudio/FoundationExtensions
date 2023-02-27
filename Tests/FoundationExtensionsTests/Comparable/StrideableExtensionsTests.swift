@@ -1,10 +1,4 @@
-//
-//  StrideableExtensionsTests.swift
-//  FoundationExtensionsTests
-//
-//  Created by Luiz Barbosa on 31.07.19.
-//  Copyright © 2019 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 #if !os(watchOS)
 import FoundationExtensions

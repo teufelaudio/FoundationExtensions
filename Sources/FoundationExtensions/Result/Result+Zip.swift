@@ -1,10 +1,4 @@
-//
-//  Result+Zip.swift
-//  FoundationExtensions
-//
-//  Created by Luiz Barbosa on 30.11.18.
-//  Copyright © 2018 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 // swiftlint:disable large_tuple
 import Foundation

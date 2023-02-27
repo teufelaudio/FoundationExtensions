@@ -1,10 +1,4 @@
-//
-//  MockJson.swift
-//  FoundationExtensionsTests
-//
-//  Created by Luiz Barbosa on 13.07.18.
-//  Copyright © 2018 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 extension String: Error { }
 extension Int: Error { }

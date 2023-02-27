@@ -1,10 +1,4 @@
-//
-//  Collection+Extensions.swift
-//  FoundationExtensions
-//
-//  Created by Luiz Barbosa on 09.12.19.
-//  Copyright © 2017 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 extension Collection {
     /// Given a predicate to select the elements you want to modify in this Collection, and a key-path to a single property
