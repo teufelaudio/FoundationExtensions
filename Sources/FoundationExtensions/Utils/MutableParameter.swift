@@ -1,5 +1,5 @@
-// sourcery: Prism
-// sourcery: EnumCodable
+//  Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
+
 /// MutableParameter is a way to represent thing that are in change.
 /// Like, imagine that the headphones name is "avocado". Now we want to change it to "orange".
 /// In the headphones is still "avocado", but the user wants "orange", we are sending the request but while we
@@ -41,5 +41,85 @@ public enum MutableParameter<T> {
 extension MutableParameter: Equatable where T: Equatable { }
 extension MutableParameter: Hashable where T: Hashable { }
 extension MutableParameter: Sendable where T: Sendable { }
-extension MutableParameter: Encodable where T: Encodable { }
-extension MutableParameter: Decodable where T: Decodable { }
+
+// MARK: - MutableParameter - EnumCodable
+extension MutableParameter: Codable where T: Codable {
+    enum CodingKeys: String, CodingKey {
+        case type
+        case associatedValues
+
+        enum ValueKeys: String, CodingKey {
+            case associatedValue0
+        }
+        enum ChangingKeys: String, CodingKey {
+            case old
+            case new
+        }
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        switch try container.decode(String.self, forKey: .type) {
+        case "value":
+            let subContainer = try container.nestedContainer(keyedBy: CodingKeys.ValueKeys.self, forKey: .associatedValues)
+            let associatedValues0 = try subContainer.decode(T.self, forKey: .associatedValue0)
+            self = .value(associatedValues0)
+        case "changing":
+            let subContainer = try container.nestedContainer(keyedBy: CodingKeys.ChangingKeys.self, forKey: .associatedValues)
+            let associatedValues0 = try subContainer.decode(T.self, forKey: .old)
+            let associatedValues1 = try subContainer.decode(T.self, forKey: .new)
+            self = .changing(old: associatedValues0, new: associatedValues1)
+        default:
+            throw DecodingError.keyNotFound(CodingKeys.type, .init(codingPath: container.codingPath, debugDescription: "Unknown key"))
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case let .value(associatedValue0):
+            try container.encode("value", forKey: .type)
+            var subContainer = container.nestedContainer(keyedBy: CodingKeys.ValueKeys.self, forKey: .associatedValues)
+            try subContainer.encode(associatedValue0, forKey: .associatedValue0)
+        case let .changing(old, new):
+            try container.encode("changing", forKey: .type)
+            var subContainer = container.nestedContainer(keyedBy: CodingKeys.ChangingKeys.self, forKey: .associatedValues)
+            try subContainer.encode(old, forKey: .old)
+            try subContainer.encode(new, forKey: .new)
+        }
+    }
+}
+
+// MARK: - MutableParameter - Prism
+extension MutableParameter {
+    public var value: T? {
+        get {
+            guard case let .value(associatedValue0) = self else { return nil }
+            return (associatedValue0)
+        }
+        set {
+            guard case .value = self, let newValue = newValue else { return }
+            self = .value(newValue)
+        }
+    }
+
+    public var isValue: Bool {
+        self.value != nil
+    }
+
+    public var changing: (old: T, new: T)? {
+        get {
+            guard case let .changing(old, new) = self else { return nil }
+            return (old, new)
+        }
+        set {
+            guard case .changing = self, let newValue = newValue else { return }
+            self = .changing(old: newValue.0, new: newValue.1)
+        }
+    }
+
+    public var isChanging: Bool {
+        self.changing != nil
+    }
+
+}
