@@ -1,10 +1,4 @@
-//
-//  Localizer.swift
-//  FoundationExtensions
-//
-//  Created by Luis Reisewitz on 21.04.20.
-//  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 // swiftlint:disable nslocalizedstring_key
 /// Controls localization of the app.

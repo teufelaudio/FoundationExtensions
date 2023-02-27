@@ -1,10 +1,4 @@
-//
-//  DispatchTimeIntervalTests.swift
-//  FoundationExtensionsTests
-//
-//  Created by Luiz Barbosa on 30.04.20.
-//  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 #if !os(watchOS)
 import FoundationExtensions

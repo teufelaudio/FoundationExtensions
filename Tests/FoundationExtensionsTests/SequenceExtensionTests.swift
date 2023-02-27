@@ -1,10 +1,4 @@
-//
-//  SequenceExtensionTests.swift
-//  FoundationExtensionsTests
-//
-//  Created by Thomas Mellenthin on 29.01.20.
-//  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 #if !os(watchOS)
 import XCTest

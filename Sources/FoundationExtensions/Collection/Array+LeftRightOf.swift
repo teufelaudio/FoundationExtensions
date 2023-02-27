@@ -1,10 +1,4 @@
-//
-//  Array+LeftRightOf.swift
-//  FoundationExtensions
-//
-//  Created by Thomas Mellenthin on 15.09.20.
-//  Copyright © 2018 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 import Foundation
 

@@ -1,10 +1,5 @@
-//
-//  PromiseType+DefaultOperators.swift
-//  FoundationExtensions
-//
-//  Created by Luiz Rodrigo Martins Barbosa on 19.04.21.
-//  Copyright © 2021 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
+
 #if canImport(Combine)
 import Combine
 import Foundation

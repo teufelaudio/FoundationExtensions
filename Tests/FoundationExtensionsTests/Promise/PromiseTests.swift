@@ -1,10 +1,4 @@
-//
-//  PromiseTests.swift
-//  FoundationExtensionsTests
-//
-//  Created by Luiz Rodrigo Martins Barbosa on 19.03.21.
-//  Copyright © 2021 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 #if !os(watchOS)
 import Combine

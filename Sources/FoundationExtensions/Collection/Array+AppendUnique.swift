@@ -1,10 +1,5 @@
-//
-//  Array+AppendUnique.swift
-//  FoundationExtensions
-//
-//  Created by Luiz Barbosa on 29.05.20.
-//  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
+
 import Foundation
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)

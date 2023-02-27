@@ -1,10 +1,4 @@
-//
-//  AggregratedError.swift
-//  FoundationExtensions
-//
-//  Created by Jörg Bühmann on 19.06.19.
-//  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 import Foundation
 

@@ -1,10 +1,4 @@
-//
-//  CGPointExtensionsTests.swift
-//  FoundationExtensionsTests
-//
-//  Created by Luis Reisewitz on 16.01.20.
-//  Copyright © 2020 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 #if !os(watchOS)
 import XCTest

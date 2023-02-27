@@ -1,10 +1,4 @@
-//
-//  Transient.swift
-//  FoundationExtensions
-//
-//  Created by Luiz Barbosa on 12.07.19.
-//  Copyright © 2019 Lautsprecher Teufel GmbH. All rights reserved.
-//
+// Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
 import Foundation
 
