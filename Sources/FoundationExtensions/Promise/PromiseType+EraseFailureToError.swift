@@ -4,6 +4,7 @@
 import Foundation
 import Combine
 
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension PromiseType {
     /// Erases `Failure` type to `Error`.
     ///
@@ -11,7 +12,6 @@ extension PromiseType {
     ///         .eraseFailureToError() // Publishers.Promise<Publishers.Promise<Int, Never>.Output, Error>
     ///
     /// - Returns: An ``Publishers.Promise`` wrapping this promise.
-    @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func eraseFailureToError() -> Publishers.Promise<Output, Error> {
         mapError(identity)
     }
