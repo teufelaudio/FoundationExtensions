@@ -4,7 +4,7 @@ import FoundationExtensions
 import XCTest
 
 class MutableParameterTests: XCTestCase {
-    func testMutableParameterRequestChangeTo20WhenValue15ChangingTo20() {
+    func test_MutableParameterRequestChangeTo20_WhenSelfIsValue15_ReturnsChangingFrom15To20() {
         // given
         let input: MutableParameter<Int> = .value(15)
 
@@ -17,7 +17,7 @@ class MutableParameterTests: XCTestCase {
         XCTAssertEqual(sut, result)
     }
 
-    func testMutableParameterRequestChangeMutatingTo20WhenValue15ChangingTo20() {
+    func test_MutableParameterRequestChangeMutatingTo20_WhenSelfIsValue15_MutatesSelfToChangingFrom15To20() {
         // given
         var input: MutableParameter<Int> = .value(15)
 
@@ -30,7 +30,7 @@ class MutableParameterTests: XCTestCase {
         XCTAssertEqual(input, result)
     }
 
-    func testMutableParameterSuccessRequestWhenValue15Nil() {
+    func test_MutableParameterSuccessRequest_WhenSelfIsValue15_ReturnsNil() {
         // given
         let input: MutableParameter<Int> = .value(15)
 
@@ -43,7 +43,7 @@ class MutableParameterTests: XCTestCase {
         XCTAssertEqual(sut, result)
     }
 
-    func testMutableParameterSuccessRequestWhenChangingFrom15To20Value20() {
+    func test_MutableParameterSuccessRequest_WhenValueIsChangingFrom15To20_ReturnsValue20() {
         // given
         let input: MutableParameter<Int> = .changing(old: 15, new: 20)
 
@@ -56,7 +56,7 @@ class MutableParameterTests: XCTestCase {
         XCTAssertEqual(sut, result)
     }
 
-    func testMutableParameterSuccessRequestMutatingWhenValue15Nil() {
+    func test_MutableParameterSuccessRequest_MutatingWhenSelfIsValue15_DoesNotMutateAndReturnsNil() {
         // given
         var input: MutableParameter<Int> = .value(15)
 
@@ -70,7 +70,7 @@ class MutableParameterTests: XCTestCase {
         XCTAssertEqual(sut, result)
     }
 
-    func testMutableParameterSuccessRequestMutatingWhenChangingFrom15To20Value20() {
+    func test_MutableParameterSuccessRequestMutating_WhenSelfIsChangingFrom15To20_MutatesAndReturnsValue20() {
         // given
         var input: MutableParameter<Int> = .changing(old: 15, new: 20)
 
@@ -84,7 +84,7 @@ class MutableParameterTests: XCTestCase {
         XCTAssertEqual(sut, result)
     }
 
-    func testMutableParameterFailRequestWhenValue15Nil() {
+    func test_MutableParameterFailRequest_WhenSelfIsValue15_ReturnsNil() {
         // given
         let input: MutableParameter<Int> = .value(15)
 
@@ -97,7 +97,7 @@ class MutableParameterTests: XCTestCase {
         XCTAssertEqual(sut, result)
     }
 
-    func testMutableParameterFailRequestWhenChangingFrom15To20Value15() {
+    func test_MutableParameterFailRequest_WhenSelfIsChangingFrom15To20_ReturnsValue15() {
         // given
         let input: MutableParameter<Int> = .changing(old: 15, new: 20)
 
@@ -110,7 +110,7 @@ class MutableParameterTests: XCTestCase {
         XCTAssertEqual(sut, result)
     }
 
-    func testMutableParameterFailRequestMutatingWhenValue15Nil() {
+    func test_MutableParameterFailRequestMutating_WhenSelfIsValue15_DoesNotMutateAndReturnsNil() {
         // given
         var input: MutableParameter<Int> = .value(15)
 
@@ -124,7 +124,7 @@ class MutableParameterTests: XCTestCase {
         XCTAssertEqual(sut, result)
     }
 
-    func testMutableParameterFailRequestMutatingWhenChangingFrom15To20Value15() {
+    func test_MutableParameterFailRequestMutating_WhenSelfIsChangingFrom15To20_MutatesAndReturnsValue15() {
         // given
         var input: MutableParameter<Int> = .changing(old: 15, new: 20)
 
@@ -138,7 +138,7 @@ class MutableParameterTests: XCTestCase {
         XCTAssertEqual(sut, result)
     }
 
-    func testMutableParameterPessimisticValueWhenChangingTo20From15PessimisticValue15() {
+    func test_MutableParameterPessimisticValue_WhenSelfIsChangingFrom15To20_Returns15() {
         // given
         let input: MutableParameter<Int> = .changing(old: 15, new: 20)
 
@@ -151,7 +151,7 @@ class MutableParameterTests: XCTestCase {
         XCTAssertEqual(sut, result)
     }
 
-    func testMutableParameterOptimisticValueWhenChangingTo20From15OptimisticValue20() {
+    func test_MutableParameterOptimisticValue_WhenSelfIsChangingFrom15To20_Returns20() {
         // given
         let input: MutableParameter<Int> = .changing(old: 15, new: 20)
 
