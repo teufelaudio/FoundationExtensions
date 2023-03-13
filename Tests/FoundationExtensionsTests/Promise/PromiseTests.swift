@@ -308,6 +308,56 @@ extension PromiseTests {
                             timeout: 0.1)
         waiter()
     }
+
+    func test_PromiseValueComputedProperty_WhenPromisePublishesInt1After1SecondDelay_TryAwaitValueReturns1() async throws {
+        // given
+        let result = 1
+        let sut = Publishers.Promise<Int, Error> { promise in
+            Task {
+                try await Task.sleep(nanoseconds: NSEC_PER_SEC)
+                promise(.success(result))
+            }
+            return AnyCancellable {}
+        }
+
+        // when
+        let promisedValue = try await sut.value
+
+        // then
+        XCTAssertEqual(promisedValue, result)
+    }
+
+    func test_PromiseValueComputedProperty_WhenPromisePublishesErrorAfter1SecondDelay_TryAwaitValueThrows() async throws {
+        // given
+        let result = TestFailure.foo
+        let sut = Publishers.Promise<Int, Error> { promise in
+            Task {
+                try await Task.sleep(nanoseconds: NSEC_PER_SEC)
+                promise(.failure(result))
+            }
+            return AnyCancellable {}
+        }
+
+        // when
+        let error = await returnError { _ = try await sut.value } as? TestFailure
+
+        XCTAssertEqual(error, result)
+    }
+}
+
+// MARK: - Helpers
+private enum TestFailure: Error {
+    case foo
+}
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+private func returnError(_ context: @escaping () async throws -> Void) async -> Error? {
+    do {
+        try await context()
+        return nil
+    } catch {
+        return error
+    }
 }
 
 extension XCTestCase {
