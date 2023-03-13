@@ -13,10 +13,12 @@ extension Publisher where Failure == Error {
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Publisher where Failure == Never {
-    /// Apple's `.values` implementation doesn't throw `Error`. Therefore, please use
-    /// `.stream` computed property over `.values`.
     public var stream: AsyncStream<Output> {
-        return CombineAsyncStream(self).eraseToStream()
+        if #available(iOS 15.0, *) {
+            return values.eraseToStream()
+        } else {
+            return CombineAsyncStream(self).eraseToStream()
+        }
     }
 }
 

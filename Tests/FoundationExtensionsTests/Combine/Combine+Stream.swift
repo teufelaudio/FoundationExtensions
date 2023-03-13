@@ -99,6 +99,7 @@ private enum TestFailure: Error, Equatable {
     case foo
 }
 
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 private func returnError(_ context: @escaping () async throws -> Void) async -> Error? {
     do {
         try await context()
