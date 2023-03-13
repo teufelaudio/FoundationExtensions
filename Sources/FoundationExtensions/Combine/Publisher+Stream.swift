@@ -23,7 +23,56 @@ extension Publisher where Failure == Never {
 }
 
 // MARK: - Helpers
-// Below extension copied from https://github.com/pointfreeco/swift-dependencies v0.2.0
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+fileprivate class CombineAsyncStream<Upstream: Publisher>: AsyncSequence {
+    typealias Element = Upstream.Output
+    typealias AsyncIterator = CombineAsyncStream<Upstream>
+
+    private var stream: AsyncThrowingStream<Element, Error>
+    private var cancellable: AnyCancellable?
+    private lazy var iterator = stream.makeAsyncIterator()
+
+    fileprivate init(_ upstream: Upstream) {
+        stream = .init { _ in }
+        cancellable = nil
+        stream = .init { continuation in
+            continuation.onTermination = { [weak self] _ in
+                self?.cancellable?.cancel()
+            }
+
+            cancellable = upstream
+                .handleEvents(
+                    receiveCancel: { [weak self] in
+                        continuation.finish(throwing: nil)
+                        self?.cancellable = nil
+                    }
+                )
+                .sink(receiveCompletion: { [weak self] completion in
+                    switch completion {
+                    case .failure(let error):
+                        continuation.finish(throwing: error)
+                    case .finished:
+                        continuation.finish(throwing: nil)
+                    }
+                    self?.cancellable = nil
+                }, receiveValue: { value in
+                    continuation.yield(value)
+                })
+        }    }
+
+    fileprivate func makeAsyncIterator() -> Self {
+        return self
+    }
+}
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension CombineAsyncStream: AsyncIteratorProtocol {
+    fileprivate func next() async throws -> Upstream.Output? {
+        return try await iterator.next()
+    }
+}
+
+// MARK: Below extensions copied from https://github.com/pointfreeco/swift-dependencies v0.2.0
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension AsyncThrowingStream where Failure == Error {
     /// Produces an `AsyncThrowingStream` from an `AsyncSequence` by consuming the sequence till it
@@ -252,54 +301,5 @@ extension AsyncSequence {
     /// terminates (or fails).
     fileprivate func eraseToStream() -> AsyncStream<Element> {
         AsyncStream(self)
-    }
-}
-
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-fileprivate class CombineAsyncStream<Upstream: Publisher>: AsyncSequence {
-    typealias Element = Upstream.Output
-    typealias AsyncIterator = CombineAsyncStream<Upstream>
-
-    private var stream: AsyncThrowingStream<Element, Error>
-    private var cancellable: AnyCancellable?
-    private lazy var iterator = stream.makeAsyncIterator()
-
-    fileprivate init(_ upstream: Upstream) {
-        stream = .init { _ in }
-        cancellable = nil
-        stream = .init { continuation in
-            continuation.onTermination = { [weak self] _ in
-                self?.cancellable?.cancel()
-            }
-
-            cancellable = upstream
-                .handleEvents(
-                    receiveCancel: { [weak self] in
-                        continuation.finish(throwing: nil)
-                        self?.cancellable = nil
-                    }
-                )
-                .sink(receiveCompletion: { [weak self] completion in
-                    switch completion {
-                    case .failure(let error):
-                        continuation.finish(throwing: error)
-                    case .finished:
-                        continuation.finish(throwing: nil)
-                    }
-                    self?.cancellable = nil
-                }, receiveValue: { value in
-                    continuation.yield(value)
-                })
-        }    }
-
-    fileprivate func makeAsyncIterator() -> Self {
-        return self
-    }
-}
-
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-extension CombineAsyncStream: AsyncIteratorProtocol {
-    fileprivate func next() async throws -> Upstream.Output? {
-        return try await iterator.next()
     }
 }
