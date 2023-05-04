@@ -2,7 +2,7 @@
 
 import Combine
 
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+@available(macOS 10.15, iOS 13.0, tvOS 15.0, watchOS 6.0, *)
 extension Publisher where Failure == Error {
     /// Apple's `.values` implementation doesn't throw `Error`. Therefore, please use
     /// `.stream` computed property over `.values`.
@@ -11,7 +11,7 @@ extension Publisher where Failure == Error {
     }
 }
 
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+@available(macOS 12.0, iOS 13.0, tvOS 15.0, watchOS 8.0, *)
 extension Publisher where Failure == Never {
     public var stream: AsyncStream<Output> {
         if #available(iOS 15.0, *) {

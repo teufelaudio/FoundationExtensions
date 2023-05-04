@@ -5,7 +5,7 @@ import FoundationExtensions
 import Combine
 import XCTest
 
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+@available(macOS 10.15, iOS 13.0, tvOS 15.0, watchOS 6.0, *)
 class PublishersCombineValuesTests: XCTestCase {
     func test_AsyncStream_WhenCurrentValueSubjectPublishesInt1_StreamPublishesInt1() async throws {
         // given
