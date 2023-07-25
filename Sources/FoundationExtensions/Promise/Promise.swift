@@ -73,6 +73,32 @@ extension Publishers {
             }
         }
 
+        public init(_ asyncFunc: @escaping () async throws -> Success) where Failure == Error {
+            self.init { promise in
+                let task = Task {
+                    do {
+                        let result = try await asyncFunc()
+                        promise(.success(result))
+                    } catch {
+                        promise(.failure(error))
+                    }
+                }
+
+                return AnyCancellable { task.cancel() }
+            }
+        }
+
+        public init(_ asyncFunc: @escaping () async -> Success)  where Failure == Never {
+            self.init { promise in
+                let task = Task {
+                    let result = await asyncFunc()
+                    promise(.success(result))
+                }
+
+                return AnyCancellable { task.cancel() }
+            }
+        }
+
         /// This function is called to attach the specified `Subscriber` to this `Publisher` by `subscribe(_:)`
         ///
         /// - SeeAlso: `subscribe(_:)`
