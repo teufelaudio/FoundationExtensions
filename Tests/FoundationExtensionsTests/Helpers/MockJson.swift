@@ -1,6 +1,5 @@
 // Copyright © 2023 Lautsprecher Teufel GmbH. All rights reserved.
 
-extension String: Error { }
 extension Int: Error { }
 
 struct TestJson: Codable, Equatable {

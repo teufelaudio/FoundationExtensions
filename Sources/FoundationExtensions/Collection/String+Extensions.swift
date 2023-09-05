@@ -19,3 +19,11 @@ extension String {
         isEmpty ? nil : self
     }
 }
+
+/// Lets String confirm to LocalizedError which implements `errorDescription` returning self.
+/// Helps to print or encode `Error` types as strings. See tests.
+extension String: LocalizedError {
+    public var errorDescription: String? {
+        self
+    }
+}
