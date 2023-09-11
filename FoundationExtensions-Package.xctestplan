@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "C7A8428F-1827-4A1D-9DEC-D6E40D9EAFEE",
+      "name" : "Test Scheme Action",
+      "options" : {
+        "language" : "en"
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "FoundationExtensionsTests",
+        "name" : "FoundationExtensionsTests"
+      }
+    }
+  ],
+  "version" : 1
+}
