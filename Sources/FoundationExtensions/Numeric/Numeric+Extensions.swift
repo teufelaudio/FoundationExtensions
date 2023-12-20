@@ -150,6 +150,32 @@ extension BinaryInteger {
                                    ontoBracketWith: Double(lowerBound),
                                    upperBound: upperBound)
     }
+    
+    /// Returns an integer value calculated within the given range from a percentage value
+    /// - Parameters:
+    ///   - percentage: The value between 0 and 1
+    ///   - range: The value range
+    /// - Returns: The calculated integer value that'll be contained in the range
+    public static func calculateValueInRangeFromPercentage(
+        _ percentage: Double,
+        range: ClosedRange<Int>
+    ) -> Int {
+        let percentageRange = (0.0...1.0)
+        guard percentageRange.contains(percentage) else {
+            // Since the value is not contained into the range, we have to check
+            // if the value is smaller than the lowest value in the range.
+            // If that's the case, we return the lowerBound.
+            if percentage < percentageRange.lowerBound {
+                return range.lowerBound
+            }
+            
+            // Otherwise, the value will surely be bigger than the biggest value in the range.
+            // In that case, we return 100, which is the biggest value in the value range.
+            return range.upperBound
+        }
+    
+        return Int((percentage * Double(range.upperBound - range.lowerBound)) + Double(range.lowerBound))
+    }
 }
 
 extension Double {
