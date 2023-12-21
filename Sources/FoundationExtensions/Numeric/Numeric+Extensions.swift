@@ -21,6 +21,28 @@ extension BinaryFloatingPoint {
         (percentage * (maximum - minimum)) + minimum
     }
 
+    /// Linear Interpolation between two floating-point numbers of same type
+    /// (https://en.wikipedia.org/wiki/Linear_interpolation)
+    /// Usage:
+    /// assert(Double.linearInterpolation(minimum: 0.0, maximum: 10.0, percentage: 0.5) == 5.0)
+    /// assert(Double.linearInterpolation(minimum: 1.0, maximum: 2.0, percentage: 0.5) == 1.5)
+    /// assert(Double.linearInterpolation(minimum: 1.0, maximum: 3.0, percentage: 0.2) == 1.4)
+    /// assert(Double.linearInterpolation(minimum: 1.0, maximum: 3.0, percentage: 2) == 3)
+    /// assert(Double.linearInterpolation(minimum: 1.0, maximum: 3.0, percentage: 2, constrainedToValidPercentage: false) == 5)
+    ///
+    /// - Parameters:
+    ///   - minimum: lower number
+    ///   - maximum: greater number
+    ///   - percentage: point in interpolation where the result should be, from 0.0 to 1.0
+    ///   - constrainedToValidPercentage: constrains the percentage between 0 and 1
+    /// - Returns: the normalized number between maximum and minimum, given the percentage progress
+    public static func linearInterpolation(minimum: Self, maximum: Self, percentage: Self, , constrainedToValidPercentage: Bool = true) -> Self {
+        let percentage = constrainedToValidPercentage
+            ? percentage.clamped(to: 0...1)
+            : percentage
+        Self.linearInterpolation(minimum: minimum, maximum: maximum, percentage: percentage)
+    }
+    
     /// Linear Progress between two floating-point numbers of same type
     /// It's the dual of Linear Interpolation, for a value we want the percentage, not the opposite.
     /// Usage:
@@ -149,32 +171,6 @@ extension BinaryInteger {
                                    constrainedToValidPercentage: constrainedToValidPercentage,
                                    ontoBracketWith: Double(lowerBound),
                                    upperBound: upperBound)
-    }
-    
-    /// Returns an integer value calculated within the given range from a percentage value
-    /// - Parameters:
-    ///   - percentage: The value between 0 and 1
-    ///   - range: The value range
-    /// - Returns: The calculated integer value that'll be contained in the range
-    public static func calculateValueInRangeFromPercentage(
-        _ percentage: Double,
-        range: ClosedRange<Int>
-    ) -> Int {
-        let percentageRange = (0.0...1.0)
-        guard percentageRange.contains(percentage) else {
-            // Since the value is not contained into the range, we have to check
-            // if the value is smaller than the lowest value in the range.
-            // If that's the case, we return the lowerBound.
-            if percentage < percentageRange.lowerBound {
-                return range.lowerBound
-            }
-            
-            // Otherwise, the value will surely be bigger than the biggest value in the range.
-            // In that case, we return 100, which is the biggest value in the value range.
-            return range.upperBound
-        }
-    
-        return Int((percentage * Double(range.upperBound - range.lowerBound)) + Double(range.lowerBound))
     }
 }
 
