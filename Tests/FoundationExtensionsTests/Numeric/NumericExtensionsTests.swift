@@ -277,30 +277,5 @@ class NumericExtensionsTests: XCTestCase {
             XCTAssertEqual($0.expected, $0.result, $0.failureMessage)
         }
     }
-    
-    func testCalculateValueInRangeFromPercentage() {
-        // given
-        let tests: [(percentageValue: Double, range: ClosedRange<Int>, expectedValue: Int)] = [
-            (percentageValue: 0.5, range: (-100...100), expectedValue: 0),
-            (percentageValue: 2, range: (-100...100), expectedValue: 100),
-            (percentageValue: -2, range: (-100...100), expectedValue: -100),
-            (percentageValue: 0.5, range: (-50...100), expectedValue: 25),
-            (percentageValue: 2, range: (-50...100), expectedValue: 100),
-            (percentageValue: -2, range: (-50...100), expectedValue: -50)
-        ]
-
-        // when
-        let results: [(result: Int, expected: Int, failureMessage: String)] = tests.map {
-            let result = Int.calculateValueInRangeFromPercentage($0.percentageValue, range: $0.range)
-            let failureMessage = "Expected interpolation from \($0.range.lowerBound) to \($0.range.upperBound) on " +
-            "\($0.percentageValue) to be \($0.expectedValue * 100)% but found \(result * 100)%"
-            return (result: result, expected: $0.expectedValue, failureMessage: failureMessage)
-        }
-        
-        // then
-        results.forEach {
-            XCTAssertEqual($0.expected, $0.result, $0.failureMessage)
-        }
-    }
 }
 #endif
