@@ -4,23 +4,28 @@ import Foundation
 
 // MARK: - Interpolation & Progress for Floating Points
 extension BinaryFloatingPoint {
-
     /// Linear Interpolation between two floating-point numbers of same type
     /// (https://en.wikipedia.org/wiki/Linear_interpolation)
     /// Usage:
     /// assert(Double.linearInterpolation(minimum: 0.0, maximum: 10.0, percentage: 0.5) == 5.0)
     /// assert(Double.linearInterpolation(minimum: 1.0, maximum: 2.0, percentage: 0.5) == 1.5)
     /// assert(Double.linearInterpolation(minimum: 1.0, maximum: 3.0, percentage: 0.2) == 1.4)
+    /// assert(Double.linearInterpolation(minimum: 1.0, maximum: 3.0, percentage: 2) == 3)
+    /// assert(Double.linearInterpolation(minimum: 1.0, maximum: 3.0, percentage: 2, constrainedToValidPercentage: false) == 5)
     ///
     /// - Parameters:
     ///   - minimum: lower number
     ///   - maximum: greater number
     ///   - percentage: point in interpolation where the result should be, from 0.0 to 1.0
+    ///   - constrainedToValidPercentage: constrains the percentage between 0 and 1
     /// - Returns: the normalized number between maximum and minimum, given the percentage progress
-    public static func linearInterpolation(minimum: Self, maximum: Self, percentage: Self) -> Self {
-        (percentage * (maximum - minimum)) + minimum
+    public static func linearInterpolation(minimum: Self, maximum: Self, percentage: Self, constrainedToValidPercentage: Bool = true) -> Self {
+        let percentage = constrainedToValidPercentage
+            ? percentage.clamped(to: 0...1)
+            : percentage
+        return (percentage * (maximum - minimum)) + minimum
     }
-
+    
     /// Linear Progress between two floating-point numbers of same type
     /// It's the dual of Linear Interpolation, for a value we want the percentage, not the opposite.
     /// Usage:
