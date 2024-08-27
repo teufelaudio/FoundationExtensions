@@ -46,7 +46,16 @@ extension ComparableExtensionsTests {
             (minimum: 0.0, maximum: 100.0, given: -1000.0, expected: 0.0),
             (minimum: 0.0, maximum: 100.0, given: 100.01, expected: 100.0),
             (minimum: 0.0, maximum: 100.0, given: 101.0, expected: 100.0),
-            (minimum: 0.0, maximum: 100.0, given: 1000.0, expected: 100.0)
+            (minimum: 0.0, maximum: 100.0, given: 1000.0, expected: 100.0),
+            (minimum: -100.0, maximum: 100.0, given: 0.0, expected: 0.0),
+            (minimum: -100.0, maximum: 100.0, given: -1.0, expected: -1.0),
+            (minimum: -100.0, maximum: 100.0, given: -101.0, expected: -100.0),
+            (minimum: -100.0, maximum: 100.0, given: 101.0, expected: 100.0),
+            (minimum: -100.0, maximum: -40.0, given: -45.0, expected: -45.0),
+            (minimum: -100.0, maximum: -40.0, given: 30.0, expected: -40.0),
+            (minimum: -100.0, maximum: -40.0, given: -30.0, expected: -40.0),
+            (minimum: -100.0, maximum: -40.0, given: -101.0, expected: -100.0),
+            (minimum: -100.0, maximum: -40.0, given: -99.0, expected: -99.0),
         ]
 
         // when
