@@ -27,7 +27,7 @@ extension Data {
         }
 
 
-        /// Prints the mask as hex string. Depening on the mask bits, the output is different
+        /// Prints the mask as hex string. Depending on the mask bits, the output is different
         ///
         /// * "AA": No mask applied (0x00), so the output for this byte is the hex representation.
         /// * "..": At least one bit is masked (0x01), so the output for this byte is ".."
@@ -86,11 +86,22 @@ extension Data {
     /// - Parameter match: A MatchMask containing the expected bytes and the bitmask to apply before comparing
     /// - Returns: Returns true, if the expected bytes match our bytes, respecting the mask.
     public func matches(_ match: MatchMask) -> Bool {
-        guard self.count == match.expected.count, match.expected.count == match.mask.count else {
+        guard self.count >= match.expected.count, // match must be not longer than ourself (AA cannot match A)
+              match.expected.count > 0, // we need at least one match byte
+              match.expected.count == match.mask.count else { // the mask must be as long as the expected bytes
             return false
         }
 
-        for (index, byte) in self.enumerated() {
+        if self.count == 0 {
+            if match.expected.count == 0 {
+                // both us and the expectation empty? It's a match 👍
+                return true
+            }
+            // our data is empty, but we have match bytes? That's not a match 👎
+            return false
+        }
+
+        for (index, byte) in self.enumerated().prefix(match.expected.count) {
             let maskedByte = byte & match.mask[index]  // Apply mask to the actual byte
             let expectedByte = match.expected[index] & match.mask[index]  // Apply mask to the expected byte
 
