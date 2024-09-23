@@ -73,9 +73,14 @@ extension Publishers {
             }
         }
 
-        public init(_ asyncFunc: @escaping () async throws -> Success) where Failure == Error {
+        public init(_ asyncFunc: @escaping @Sendable () async throws -> Success) where Failure == Error {
             self.init { promise in
-                let task = Task {
+                // FIXME: https://forums.swift.org/t/promise-is-non-sendable-type/68383
+                // Apple does not really care about Combine framework anymore...
+                #if swift(>=6)
+                nonisolated(unsafe) let promise = promise
+                #endif
+                let task = Task { @Sendable in
                     do {
                         let result = try await asyncFunc()
                         promise(.success(result))
@@ -88,9 +93,15 @@ extension Publishers {
             }
         }
 
-        public init(_ asyncFunc: @escaping () async -> Success)  where Failure == Never {
+        public init(_ asyncFunc: @escaping @Sendable () async -> Success) where Failure == Never {
             self.init { promise in
-                let task = Task {
+                // FIXME: https://forums.swift.org/t/promise-is-non-sendable-type/68383
+                // Apple does not really care about Combine framework anymore...
+                #if swift(>=6)
+                nonisolated(unsafe) let promise = promise
+                #endif
+
+                let task = Task { @Sendable in
                     let result = await asyncFunc()
                     promise(.success(result))
                 }
