@@ -5,11 +5,11 @@ import FoundationExtensions
 import XCTest
 
 class AnyEncodableTests: XCTestCase {
-    let encoder = JSONEncoder()
 
     // MARK: - String Encoding
     func testStringEncodingInit() {
         // Given
+        let encoder = JSONEncoder()
         let testString = "This is a test string to test encoding. \\::: ☝️"
 
         // When
@@ -20,6 +20,7 @@ class AnyEncodableTests: XCTestCase {
     }
     func testStringEncodingHelper() {
         // Given
+        let encoder = JSONEncoder()
         let testString = "This is a test string to test encoding. \\::: ☝️"
 
         // When
@@ -32,6 +33,8 @@ class AnyEncodableTests: XCTestCase {
     // MARK: - Dictionary Encoding
     func testDictionaryEncodingInit() {
         // Given
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
         let testDictionary: [String: [Int]] = [
             "key1": [1, 5, 10],
             "key2": [5, 292, 2828]
@@ -45,6 +48,8 @@ class AnyEncodableTests: XCTestCase {
     }
     func testDictionaryEncodingHelper() {
         // Given
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
         let testDictionary: [String: [Int]] = [
             "key1": [1, 5, 10],
             "key2": [5, 292, 2828]
