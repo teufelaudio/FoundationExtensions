@@ -452,6 +452,7 @@ class ResultTests: XCTestCase {
         XCTAssertEqual(result, expectedToBeSelf)
     }
 
+    @MainActor
     func testOnFailureFailureResult() {
         // given
         let expectedError = AnyError()
@@ -834,7 +835,7 @@ class ResultTests: XCTestCase {
         XCTAssertTrue(sut.isFailure)
         XCTAssertNil(sut.value)
         XCTAssertNotNil(sut.error as? AnyError)
-        XCTAssert(anyError === (sut.error as? AnyError))
+        XCTAssert(anyError == (sut.error as? AnyError))
     }
 
     // MARK: - Materialization
