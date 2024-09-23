@@ -32,7 +32,7 @@ class NumericExtensionsTests: XCTestCase {
 
         // when
         let results: [(result: Double, expected: Double, failureMessage: String)] = tests.map {
-            let result = Double.linearInterpolation(minimum: $0.minimum, maximum: $0.maximum, percentage: $0.percentage)
+            let result = Double.linearInterpolation(minimum: $0.minimum, maximum: $0.maximum, percentage: $0.percentage, constrainedToValidPercentage: false)
             let failureMessage = "Expected interpolation from \($0.minimum) to \($0.maximum) on " +
                 "\($0.percentage * 100)% to be \($0.expected) but found \(result)"
             return (result: result, expected: $0.expected, failureMessage: failureMessage)
@@ -188,7 +188,7 @@ class NumericExtensionsTests: XCTestCase {
 
         // when
         let results: [(result: Double, expected: Double, failureMessage: String)] = tests.map {
-            let result = Int.linearInterpolation(minimum: $0.minimum, maximum: $0.maximum, percentage: $0.percentage)
+            let result = Int.linearInterpolation(minimum: $0.minimum, maximum: $0.maximum, percentage: $0.percentage, constrainedToValidPercentage: false)
             let failureMessage = "Expected interpolation from \($0.minimum) to \($0.maximum) on " +
             "\($0.percentage * 100)% to be \($0.expected) but found \(result)"
             return (result: result, expected: $0.expected, failureMessage: failureMessage)
