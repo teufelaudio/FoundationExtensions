@@ -4,7 +4,7 @@
 import FoundationExtensions
 import XCTest
 
-class DispatchTimeIntervalTests: XCTestCase {
+final class DispatchTimeIntervalTests: XCTestCase {
     func testFromTimeIntervalRoundToSeconds() {
         // given
         let doubles: [Double] = [1, 2, 3, 4, 5.0000000001]
@@ -122,17 +122,16 @@ class DispatchTimeIntervalTests: XCTestCase {
 
     func testToTimeIntervalFromNanoseconds() {
         // given
-        let intervals: [DispatchTimeInterval] =
-            [.nanoseconds(1), .nanoseconds(2), .nanoseconds(3), .nanoseconds(4), .nanoseconds(5)]
-                + [.nanoseconds(1000), .nanoseconds(2000), .nanoseconds(3000), .nanoseconds(4000), .nanoseconds(5000)]
-                + [.nanoseconds(1_000_000), .nanoseconds(2_000_000), .nanoseconds(3_000_000), .nanoseconds(4_000_000), .nanoseconds(5_000_000)]
-                + [
-                    .nanoseconds(1_000_000_000),
-                    .nanoseconds(2_000_000_000),
-                    .nanoseconds(3_000_000_000),
-                    .nanoseconds(4_000_000_000),
-                    .nanoseconds(5_000_000_000)
-                ]
+        let intervals: [DispatchTimeInterval] = [
+            .nanoseconds(1), .nanoseconds(2), .nanoseconds(3), .nanoseconds(4), .nanoseconds(5),
+            .nanoseconds(1_000), .nanoseconds(2_000), .nanoseconds(3_000), .nanoseconds(4_000), .nanoseconds(5_000),
+            .nanoseconds(1_000_000), .nanoseconds(2_000_000), .nanoseconds(3_000_000), .nanoseconds(4_000_000), .nanoseconds(5_000_000),
+            .nanoseconds(1_000_000_000),
+            .nanoseconds(2_000_000_000),
+            .nanoseconds(3_000_000_000),
+            .nanoseconds(4_000_000_000),
+            .nanoseconds(5_000_000_000)
+        ]
 
         // when
         let sut = intervals.map { $0.toTimeInterval() }
