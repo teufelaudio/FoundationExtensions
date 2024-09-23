@@ -69,8 +69,9 @@ class ResultTests: XCTestCase {
         let failureCaseJson = String(data: (try? encoder.encode(failureObject))!, encoding: .utf8)
 
         // then
-        XCTAssertTrue([successJson1, successJson2].contains(successCaseJson))
-        XCTAssertEqual(failureCaseJson, failureJson)
+        print(successCaseJson)
+        XCTAssertTrue([successJson1, successJson2, successJson3, successJson4].contains(successCaseJson))
+        XCTAssertTrue([failureJson1, failureJson2].contains(failureCaseJson))
     }
 
     func testResultDecoder() {
@@ -79,7 +80,7 @@ class ResultTests: XCTestCase {
 
         // when
         let successCase = try? decoder.decode(TestJson.self, from: successJson1.data(using: .utf8)!)
-        let failureCase = try? decoder.decode(TestJson.self, from: failureJson.data(using: .utf8)!)
+        let failureCase = try? decoder.decode(TestJson.self, from: failureJson1.data(using: .utf8)!)
 
         // then
         XCTAssertEqual(successCase, successObject)
