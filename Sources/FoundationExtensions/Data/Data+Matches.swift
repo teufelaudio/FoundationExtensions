@@ -87,7 +87,6 @@ extension Data {
     /// - Returns: Returns true, if the expected bytes match our bytes, respecting the mask.
     public func matches(_ match: MatchMask) -> Bool {
         guard self.count >= match.expected.count, // match must be not longer than ourself (AA cannot match A)
-              match.expected.count > 0, // we need at least one match byte
               match.expected.count == match.mask.count else { // the mask must be as long as the expected bytes
             return false
         }
@@ -98,6 +97,8 @@ extension Data {
                 return true
             }
             // our data is empty, but we have match bytes? That's not a match 👎
+            return false
+        } else if match.expected.count == 0 {
             return false
         }
 
