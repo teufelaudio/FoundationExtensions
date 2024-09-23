@@ -26,7 +26,7 @@ public enum Localizer {
     }
 
     /// Determines how keys without a translation in the Locale language should be handled.
-    public static var fallbackMode: FallbackMode = .fallbackToEnglish
+    public static var fallbackMode: FallbackMode { .fallbackToEnglish }
 
     fileprivate static func localizedString(_ key: String, bundle: Bundle, comment: String) -> String {
         // Code here is adopted from https://stackoverflow.com/a/48415872
