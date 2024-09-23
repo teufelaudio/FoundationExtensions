@@ -1,76 +1,103 @@
 // Copyright (c) 2021 Point-Free, Inc.
 //
-// RuntimeWarning adopted from from https://www.pointfree.co/blog/posts/70-unobtrusive-runtime-warnings-for-libraries and
-// https://github.com/pointfreeco/swift-composable-architecture/blob/main/Sources/ComposableArchitecture/Internal/RuntimeWarnings.swift
+// RuntimeWarning adopted from
+// https://github.com/pointfreeco/swift-issue-reporting/blob/b22b6ae2f7633170565e5888e8ed7950b2990e9c/Sources/IssueReporting/IssueReporters/RuntimeWarningReporter.swift
 
 import Foundation
 
-extension Notification.Name {
-  public static let foundationExtensionsRuntimeWarning = Self("FoundationExtensions.runtimeWarning")
-}
+#if canImport(os)
+  import os
+#endif
 
 @_transparent
 @inline(__always)
 public func runtimeWarning(
-  _ message: @autoclosure () -> String,
-  category: String? = "FoundationExtensions"
+    _ message: @autoclosure () -> String?,
+    fileID: StaticString = #fileID,
+    filePath: StaticString = #filePath,
+    line: UInt = #line,
+    column: UInt = #column
 ) {
-  #if DEBUG
-    let message = message()
-    NotificationCenter.default.post(
-      name: .foundationExtensionsRuntimeWarning,
-      object: nil,
-      userInfo: ["message": message]
-    )
-    let category = category ?? "Runtime Warning"
-    #if canImport(os)
-      os_log(
-        .fault,
-        dso: dso,
-        log: OSLog(subsystem: "com.apple.runtime-issues", category: category),
-        "%@",
-        message
-      )
-    #else
-      fputs("\(formatter.string(from: Date())) [\(category)] \(message)\n", stderr)
-    #endif
-  #endif
+    _RuntimeWarningReporter()
+        .reportIssue(
+            message(),
+            fileID: fileID,
+            filePath: filePath,
+            line: line,
+            column: column
+        )
 }
 
-
-#if DEBUG
-
+public struct _RuntimeWarningReporter {
   #if canImport(os)
-    import os
+    @UncheckedSendable
+    #if canImport(Darwin)
+      @_transparent
+    #endif
+    @usableFromInline var dso: UnsafeRawPointer
 
-    // NB: Xcode runtime warnings offer a much better experience than traditional assertions and
-    //     breakpoints, but Apple provides no means of creating custom runtime warnings ourselves.
-    //     To work around this, we hook into SwiftUI's runtime issue delivery mechanism, instead.
-    //
-    // Feedback filed: https://gist.github.com/stephencelis/a8d06383ed6ccde3e5ef5d1b3ad52bbc
+    init(dso: UnsafeRawPointer) {
+      self.dso = dso
+    }
+
     @usableFromInline
-    let dso = { () -> UnsafeMutableRawPointer in
+    init() {
+      // NB: Xcode runtime warnings offer a much better experience than traditional assertions and
+      //     breakpoints, but Apple provides no means of creating custom runtime warnings ourselves.
+      //     To work around this, we hook into SwiftUI's runtime issue delivery mechanism, instead.
+      //
+      // Feedback filed: https://gist.github.com/stephencelis/a8d06383ed6ccde3e5ef5d1b3ad52bbc
       let count = _dyld_image_count()
       for i in 0..<count {
         if let name = _dyld_get_image_name(i) {
           let swiftString = String(cString: name)
           if swiftString.hasSuffix("/SwiftUI") {
             if let header = _dyld_get_image_header(i) {
-              return UnsafeMutableRawPointer(mutating: UnsafeRawPointer(header))
+              self.init(dso: UnsafeRawPointer(header))
+              return
             }
           }
         }
       }
-      return UnsafeMutableRawPointer(mutating: #dsohandle)
-    }()
-  #else
-    import Foundation
-
-    @usableFromInline
-    let formatter: DateFormatter = {
-      let formatter = DateFormatter()
-      formatter.dateFormat = "yyyy-MM-dd HH:MM:SS.sssZ"
-      return formatter
-    }()
+      self.init(dso: #dsohandle)
+    }
   #endif
-#endif
+
+  @_transparent
+  public func reportIssue(
+    _ message: @autoclosure () -> String?,
+    fileID: StaticString,
+    filePath: StaticString,
+    line: UInt,
+    column: UInt
+  ) {
+    #if canImport(os)
+      let moduleName = String(
+        Substring("\(fileID)".utf8.prefix(while: { $0 != UTF8.CodeUnit(ascii: "/") }))
+      )
+      var message = message() ?? ""
+      if message.isEmpty {
+        message = "Issue reported"
+      }
+      os_log(
+        .fault,
+        dso: dso,
+        log: OSLog(subsystem: "com.apple.runtime-issues", category: moduleName),
+        "%@",
+        "\(message)"
+      )
+    #else
+      printError("\(fileID):\(line): \(message() ?? "")")
+    #endif
+  }
+}
+
+@propertyWrapper
+@usableFromInline
+struct UncheckedSendable<Value>: @unchecked Sendable {
+  @usableFromInline
+  var wrappedValue: Value
+  init(wrappedValue value: Value) {
+    self.wrappedValue = value
+  }
+}
