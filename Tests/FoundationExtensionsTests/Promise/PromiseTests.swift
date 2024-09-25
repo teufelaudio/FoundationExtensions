@@ -5,6 +5,7 @@ import Combine
 import FoundationExtensions
 import XCTest
 
+@available(macOS 14, iOS 17.0, tvOS 17.0, watchOS 8.0, *)
 @MainActor
 class PromiseTests: XCTestCase {
     func testInitWithUpstreamThatSendsOneValueAndCompletes() {
@@ -83,7 +84,7 @@ class PromiseTests: XCTestCase {
     }
 }
 
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+@available(macOS 14, iOS 17.0, tvOS 17.0, watchOS 8.0, *)
 extension PromiseTests {
     func testInitWithClosureThatSendsOneValueAndCompletes() {
         let subject = PassthroughSubject<String, String>()

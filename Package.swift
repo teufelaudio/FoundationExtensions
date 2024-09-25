@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "FoundationExtensions",
-    platforms: [.iOS(.v17), .macOS(.v14), .tvOS(.v17), .watchOS(.v8)],
+    platforms: [.iOS(.v13), .macOS(.v10_15), .tvOS(.v13), .watchOS(.v6)],
     products: [
         .library(name: "FoundationExtensions", targets: ["FoundationExtensions"]),
         .library(name: "FoundationExtensionsDynamic", type: .dynamic, targets: ["FoundationExtensions"])

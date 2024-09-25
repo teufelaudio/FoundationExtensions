@@ -3,6 +3,7 @@
 import FoundationExtensions
 import XCTest
 
+@available(macOS 14, iOS 17.0, tvOS 17.0, watchOS 8.0, *)
 final class TimeIntervalTests: XCTestCase {
     func testDurationToTimeIntervalZero() {
         let duration = Duration.safe(secondsComponent: 0, attosecondsComponent: 0)
@@ -119,6 +120,7 @@ final class TimeIntervalTests: XCTestCase {
     }
 }
 
+@available(macOS 14, iOS 17.0, tvOS 17.0, watchOS 8.0, *)
 extension TimeIntervalTests {
     func testMinutesToSeconds() {
         // Given

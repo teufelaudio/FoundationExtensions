@@ -16,6 +16,7 @@ extension TimeInterval {
     ///
     /// - Note: If the `Duration` contains values that exceed the precision of `Double`, the resulting `TimeInterval` may not
     /// accurately represent the smallest time increments.
+    @available(iOS 16.0, *)
     public init(_ duration: Duration) {
         let seconds: Self = Self(duration.components.seconds)
 
