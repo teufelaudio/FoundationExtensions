@@ -23,9 +23,11 @@ public struct ReadFileContents {
 }
 
 extension ReadFileContents {
-    public static let live = ReadFileContents { origin in
-        Result {
-            try Data(contentsOf: origin, options: .alwaysMapped)
+    public static var live: Self {
+        .init { origin in
+            Result {
+                try Data(contentsOf: origin, options: .alwaysMapped)
+            }
         }
     }
 }

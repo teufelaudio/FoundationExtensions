@@ -98,11 +98,13 @@ extension BinaryInteger {
     ///   - minimum: lower number
     ///   - maximum: greater number
     ///   - percentage: point in interpolation where the result should be, from 0.0 to 1.0
+    ///   - constrainedToValidPercentage: constrains the result between 0% and 100%
     /// - Returns: the normalized number between maximum and minimum, given the percentage progress
-    public static func linearInterpolation(minimum: Self, maximum: Self, percentage: Double) -> Double {
+    public static func linearInterpolation(minimum: Self, maximum: Self, percentage: Double, constrainedToValidPercentage: Bool = true) -> Double {
         Double.linearInterpolation(minimum: Double(minimum),
                                    maximum: Double(maximum),
-                                   percentage: percentage)
+                                   percentage: percentage,
+                                   constrainedToValidPercentage: constrainedToValidPercentage)
     }
 
     /// Linear Progress between two integer numbers of same type

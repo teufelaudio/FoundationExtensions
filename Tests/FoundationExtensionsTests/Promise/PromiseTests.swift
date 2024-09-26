@@ -5,7 +5,8 @@ import Combine
 import FoundationExtensions
 import XCTest
 
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+@available(macOS 14, iOS 17.0, tvOS 17.0, watchOS 8.0, *)
+@MainActor
 class PromiseTests: XCTestCase {
     func testInitWithUpstreamThatSendsOneValueAndCompletes() {
         let subject = PassthroughSubject<String, String>()
@@ -83,7 +84,7 @@ class PromiseTests: XCTestCase {
     }
 }
 
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+@available(macOS 14, iOS 17.0, tvOS 17.0, watchOS 8.0, *)
 extension PromiseTests {
     func testInitWithClosureThatSendsOneValueAndCompletes() {
         let subject = PassthroughSubject<String, String>()
@@ -312,34 +313,28 @@ extension PromiseTests {
     func test_PromiseValueComputedProperty_WhenPromisePublishesInt1After1SecondDelay_TryAwaitValueReturns1() async throws {
         // given
         let result = 1
-        let sut = Publishers.Promise<Int, Error> { promise in
-            Task {
-                try await Task.sleep(nanoseconds: NSEC_PER_SEC)
-                promise(.success(result))
-            }
-            return AnyCancellable {}
+        let sut = Publishers.Promise<Int, Error> {
+            try await Task.sleep(nanoseconds: NSEC_PER_SEC)
+            return result
         }
 
         // when
-        let promisedValue = try await sut.value
+        let promisedValue = try await sut.value()
 
         // then
         XCTAssertEqual(promisedValue, result)
     }
-
+    
     func test_PromiseValueComputedProperty_WhenPromisePublishesErrorAfter1SecondDelay_TryAwaitValueThrows() async throws {
         // given
         let result = TestFailure.foo
-        let sut = Publishers.Promise<Int, Error> { promise in
-            Task {
-                try await Task.sleep(nanoseconds: NSEC_PER_SEC)
-                promise(.failure(result))
-            }
-            return AnyCancellable {}
+        let sut = Publishers.Promise<Int, Error> {
+            try await Task.sleep(nanoseconds: NSEC_PER_SEC)
+            throw result
         }
 
         // when
-        let error = await returnError { _ = try await sut.value } as? TestFailure
+        let error = await returnError { @MainActor in _ = try await sut.value() } as? TestFailure
 
         XCTAssertEqual(error, result)
     }
@@ -351,7 +346,7 @@ private enum TestFailure: Error {
 }
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-private func returnError(_ context: @escaping () async throws -> Void) async -> Error? {
+private func returnError(_ context: @escaping @Sendable () async throws -> Void) async -> Error? {
     do {
         try await context()
         return nil

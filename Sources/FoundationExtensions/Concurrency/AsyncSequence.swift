@@ -2,7 +2,6 @@
 
 import _Concurrency
 
-@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension AsyncSequence {
     
     /// Returns a new asynchronous sequence that transforms the elements of the sequence using a key path.
@@ -16,3 +15,6 @@ extension AsyncSequence {
         map { $0[keyPath: kp] }
     }
 }
+
+// FIXME: https://github.com/swiftlang/swift/issues/57560
+extension KeyPath: @unchecked Sendable {}

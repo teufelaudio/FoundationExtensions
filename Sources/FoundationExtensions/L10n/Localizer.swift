@@ -25,8 +25,23 @@ public enum Localizer {
         }
     }
 
+    // Swift 6 requires statics to be thread safe!
+    nonisolated(unsafe) private static var _fallbackMode: FallbackMode = .fallbackToEnglish
+    private static let lock = NSLock()
+
     /// Determines how keys without a translation in the Locale language should be handled.
-    public static var fallbackMode: FallbackMode = .fallbackToEnglish
+    public static var fallbackMode: FallbackMode {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _fallbackMode
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _fallbackMode = newValue
+        }
+    }
 
     fileprivate static func localizedString(_ key: String, bundle: Bundle, comment: String) -> String {
         // Code here is adopted from https://stackoverflow.com/a/48415872

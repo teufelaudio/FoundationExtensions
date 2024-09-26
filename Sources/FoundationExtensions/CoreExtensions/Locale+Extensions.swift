@@ -3,7 +3,7 @@
 import Foundation
 
 extension Locale {
-    internal static var getReference: () -> Locale = {
+    internal static func getReference() -> Locale {
         return .current
     }
 
