@@ -2,7 +2,7 @@
 
 import Foundation
 
-@available(iOS 16.0, *)
+@available(iOS 16.0, macOS 13.0, *)
 extension Duration {
     public static func safe(secondsComponent: Int64, attosecondsComponent: Int64) -> Self {
         // Convert attoseconds to seconds (positive or negative)
