@@ -28,3 +28,5 @@ public struct Transient<Wrapped>: Equatable, Hashable, Encodable {
         // Transient properties do not get encoded.
     }
 }
+
+extension Transient: Sendable where Wrapped: Sendable { }
