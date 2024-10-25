@@ -110,6 +110,28 @@ extension Publishers {
             }
         }
 
+        @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 8.0, *)
+        public init<InnerFailure: Error>(_ asyncPromise: @escaping @Sendable () async -> Publishers.Promise<Success, InnerFailure>) where Failure == Error, Success: Sendable {
+            self.init { promise in
+                // FIXME: https://forums.swift.org/t/promise-is-non-sendable-type/68383
+                // Apple does not really care about Combine framework anymore...
+                #if swift(>=6)
+                nonisolated(unsafe) let promise = promise
+                #endif
+                let task = Task { @Sendable in
+                    let innerPromise = await asyncPromise()
+                    do {
+                        let result = try await innerPromise.value()
+                        promise(.success(result))
+                    } catch {
+                        promise(.failure(error))
+                    }
+                }
+
+                return AnyCancellable { task.cancel() }
+            }
+        }
+
         /// This function is called to attach the specified `Subscriber` to this `Publisher` by `subscribe(_:)`
         ///
         /// - SeeAlso: `subscribe(_:)`
