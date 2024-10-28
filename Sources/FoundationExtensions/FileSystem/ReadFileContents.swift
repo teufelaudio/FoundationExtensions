@@ -3,10 +3,10 @@
 import Combine
 import Foundation
 
-public struct ReadFileContents {
-    private let _run: (URL) -> Result<Data, Error>
+public struct ReadFileContents: Sendable {
+    private let _run: @Sendable (URL) -> Result<Data, Error>
 
-    public init(_ perform: @escaping (URL) -> Result<Data, Error>) {
+    public init(_ perform: @escaping @Sendable (URL) -> Result<Data, Error>) {
         self._run = perform
     }
 

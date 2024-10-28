@@ -3,10 +3,10 @@
 import Combine
 import Foundation
 
-public struct FileExists {
-    private let _run: (URL) -> Result<Bool, Error>
+public struct FileExists: Sendable {
+    private let _run: @Sendable (URL) -> Result<Bool, Error>
 
-    public init(_ perform: @escaping (URL) -> Result<Bool, Error>) {
+    public init(_ perform: @escaping @Sendable (URL) -> Result<Bool, Error>) {
         self._run = perform
     }
 
@@ -23,10 +23,18 @@ public struct FileExists {
 }
 
 extension FileExists {
-    public static func live(fileManager: FileManagerProtocol = FileManager.default) -> FileExists {
+    public static func live(fileManager: any FileManagerProtocol & Sendable ) -> FileExists {
         FileExists { file in
             Result {
                 fileManager.fileExists(atPath: file.path)
+            }
+        }
+    }
+
+    public static func live() -> FileExists {
+        FileExists { file in
+            Result {
+                FileManager.default.fileExists(atPath: file.path)
             }
         }
     }
