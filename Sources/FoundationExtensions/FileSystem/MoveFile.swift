@@ -3,10 +3,10 @@
 import Combine
 import Foundation
 
-public struct MoveFile {
-    private let _run: (URL, URL, Bool) -> Result<Void, Error>
+public struct MoveFile: Sendable {
+    private let _run: @Sendable (URL, URL, Bool) -> Result<Void, Error>
 
-    public init(_ perform: @escaping (URL, URL, Bool) -> Result<Void, Error>) {
+    public init(_ perform: @escaping @Sendable (URL, URL, Bool) -> Result<Void, Error>) {
         self._run = perform
     }
 
@@ -23,7 +23,7 @@ public struct MoveFile {
 }
 
 extension MoveFile {
-    public static func live(fileManager: FileManagerProtocol = FileManager.default) -> MoveFile {
+    public static func live(fileManager: any FileManagerProtocol & Sendable) -> MoveFile {
         MoveFile { origin, destination, replace in
             Result {
                 if replace, fileManager.fileExists(atPath: destination.path) {
@@ -31,6 +31,18 @@ extension MoveFile {
                 }
 
                 try fileManager.moveItem(at: origin, to: destination)
+            }
+        }
+    }
+
+    public static func live() -> Self {
+        MoveFile { origin, destination, replace in
+            Result {
+                if replace, FileManager.default.fileExists(atPath: destination.path) {
+                    try FileManager.default.removeItem(at: destination)
+                }
+
+                try FileManager.default.moveItem(at: origin, to: destination)
             }
         }
     }
