@@ -16,9 +16,11 @@ public struct ReadFileContents: Sendable {
 
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func async(from origin: URL, on queue: DispatchQueue) -> Publishers.Promise<Data, Error> {
-        .perform(in: queue) {
-            _run(origin)
+        Publishers.Promise { promise in
+            promise(_run(origin))
+            return AnyCancellable {}
         }
+        .subscribe(on: queue)
     }
 }
 

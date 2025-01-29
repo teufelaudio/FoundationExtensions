@@ -16,9 +16,11 @@ public struct FileExists: Sendable {
 
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func async(in path: URL, on queue: DispatchQueue) -> Publishers.Promise<Bool, Error> {
-        Publishers.Promise<Bool, Error>.perform(in: queue) {
-            _run(path)
+        Publishers.Promise<Bool, Error> { promise in
+            promise(_run(path))
+            return AnyCancellable {}
         }
+        .subscribe(on: queue)
     }
 }
 
