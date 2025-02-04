@@ -16,9 +16,11 @@ public struct MoveFile: Sendable {
 
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func async(from origin: URL, into destination: URL, replace: Bool = false, on queue: DispatchQueue) -> Publishers.Promise<Void, Error> {
-        .perform(in: queue) {
-            _run(origin, destination, replace)
+        Publishers.Promise { promise in
+            promise(_run(origin, destination, replace))
+            return AnyCancellable {}
         }
+        .subscribe(on: queue)
     }
 }
 
