@@ -13,7 +13,7 @@ extension AnyPublisher {
     /// to which you can dynamically send value or completion events.
     ///
     /// You should return a `Cancelable`-conforming object from the closure in
-    /// which you can define any cleanup actions to execute when the pubilsher
+    /// which you can define any cleanup actions to execute when the publisher
     /// completes or the subscription to the publisher is canceled.
     ///
     /// - parameter factory: A factory with a closure to which you can
@@ -48,7 +48,7 @@ extension AnyPublisher {
     /// to which you can dynamically send value or completion events.
     ///
     /// You should return a `Cancelable`-conforming object from the closure in
-    /// which you can define any cleanup actions to execute when the pubilsher
+    /// which you can define any cleanup actions to execute when the publisher
     /// completes or the subscription to the publisher is canceled.
     ///
     /// - parameter factory: A factory with a closure to which you can
@@ -88,7 +88,7 @@ extension Publishers {
     /// to which you can dynamically send value or completion events.
     ///
     /// You should return a `Cancelable`-conforming object from the closure in
-    /// which you can define any cleanup actions to execute when the pubilsher
+    /// which you can define any cleanup actions to execute when the publisher
     /// completes or the subscription to the publisher is canceled.
     struct Create<Output, Failure: Swift.Error>: Publisher {
         typealias SubscriberHandler = (Subscriber) -> Cancellable
