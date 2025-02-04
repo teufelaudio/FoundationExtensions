@@ -396,6 +396,15 @@ extension Publishers.Promise: Publisher {
         return open(publisher)
     }
 
+    public func timeout<S: Scheduler>(
+        _ interval: S.SchedulerTimeType.Stride,
+        scheduler: S,
+        options: S.SchedulerOptions? = nil,
+        fallback: @autoclosure @escaping () -> Result<Output, Failure>
+    ) -> Publishers.Promise<Output, Failure> {
+        timeout(interval, scheduler: scheduler, options: options, fallback: fallback)
+    }
+
     @inlinable
     public func encode<Coder: TopLevelEncoder>(encoder: Coder) -> Publishers.Promise<Coder.Output, any Error> where Output: Encodable  {
         func open(_ publisher: some Publisher<Output, Failure>) -> Publishers.Promise<Coder.Output, any Error> {

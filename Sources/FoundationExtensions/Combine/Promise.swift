@@ -122,8 +122,14 @@ extension Publishers {
             self.publisher = Just(value).setFailureType(to: Failure.self)
         }
 
+        @_disfavoredOverload
         @inlinable
         public init(value: Output) where Failure == Never {
+            self.init(value: value, failureType: Failure.self)
+        }
+
+        @inlinable
+        public init(value: Output) {
             self.init(value: value, failureType: Failure.self)
         }
 
