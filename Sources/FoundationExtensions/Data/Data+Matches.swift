@@ -29,19 +29,19 @@ extension Data {
 
         /// Prints the mask as hex string. Depending on the mask bits, the output is different
         ///
-        /// * "AA": No mask applied (0x00), so the output for this byte is the hex representation.
-        /// * "..": At least one bit is masked (0x01), so the output for this byte is ".."
-        /// * "::": All bits are masked (0xFF), so the output for this byte is ":".
+        /// * `**`: No mask applied (0x00), so the output for this byte is "**" (matches everything)
+        /// * `··`: At least one bit is masked (0x01), so the output for this byte is "··"
+        /// * `bb`: All bits are masked (0xff), so the output for this byte is the exact hex representation of the input
         ///  Example usage:
         ///
         ///  ```
-        ///  let data = Data([0b10101010, 0b11001100, 0b11110000])
-        ///  let expected = Data([0b10101010, 0b11001111, 0b11110000])
-        ///  let mask = Data([0b11111111, 0b11111110])  // Only 2 bytes provided, second byte misses last bit (0xfe)
+        ///  let data     = Data([0b10101010, 0b10111011, 0b11001100, 0b11110000]) // 0xaabbccf0
+        ///  let expected = Data([0b10101010, 0b10111011, 0b11001101, 0b11110000]) // 0xaabbcdf0
+        ///  let mask     = Data([0b00000000, 0b11111111, 0b11111110])             // 0xfffffe   - Only 3 bytes provided, third byte misses last bit (0xfe)
         ///  let matchMask = Data.MatchMask(expected: expected, mask: mask)
         ///
-        ///  let hexString = matchMask.description
-        ///  print(hexString)  // Output: "0xaa..f0"
+        ///  XCTAssertTrue(data.matches(matchMask))
+        ///  XCTAssertEqual(matchMask.description, "0x**bb..f0") // first byte: ignored, second must match, third, mask not fully set, fourth: mask implicitly fully set
         ///  ```
         public var description: String {
             var hexString = ""
@@ -52,13 +52,13 @@ extension Data {
                 }
                 let maskByte = mask[index]
 
-                if maskByte == 0xFF {  // All bits are set
-                    hexString += "::"
-                } else if maskByte != 0x00 {  // At least one bit is set
-                    hexString += ".."
-                } else {
-                    // No bits are set; output the hex representation of the expected byte
+                if maskByte == 0xFF {  // All bits are set - output the hex representation of the expected byte
                     hexString += String(format: "%02x", byte)
+                } else if maskByte != 0x00 {  // At least one bit is set
+                    hexString += "··"
+                } else {
+                    // No bits are set, this byte matches everything
+                    hexString += "**"
                 }
             }
 
