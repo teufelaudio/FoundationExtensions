@@ -91,6 +91,16 @@ class DataMatchesTests: XCTestCase {
 
         XCTAssertFalse(testData.matches(matchMask), "Non-empty data should not match empty expected data.")
     }
+    
+    func testDescription() {
+        let data     = Data([0b10101010, 0b10111011, 0b11001100, 0b11110000]) // 0xaabbccf0
+        let expected = Data([0b10101010, 0b10111011, 0b11001101, 0b11110000]) // 0xaabbcdf0
+        let mask     = Data([0b00000000, 0b11111111, 0b11111110])             // 0xfffffe   - Only 3 bytes provided, third byte misses last bit (0xfe)
+        let matchMask = Data.MatchMask(expected: expected, mask: mask)
+
+        XCTAssertTrue(data.matches(matchMask))
+        XCTAssertEqual(matchMask.description, "0x**bb··f0")
+    }
 }
 
 #endif
