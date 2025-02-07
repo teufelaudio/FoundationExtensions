@@ -89,7 +89,7 @@ extension Publishers {
                 self.publisher = erased.publisher
             } else {
                 self.publisher = publisher
-                    .first()
+                    .prefix(1)
                     .map { value in return { Result.success(value) } }
                     .replaceEmpty(with: { fallback() })
                     .flatMap { output in
