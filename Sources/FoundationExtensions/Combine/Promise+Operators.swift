@@ -292,6 +292,33 @@ extension Publishers.Promise: Publisher {
         setFailureType(to: E.self).flatMap(transform)
     }
 
+    @_disfavoredOverload
+    @inlinable
+    public func flatMap<T, P: Publisher>(
+        _ transform: @escaping (Output) -> P
+    ) -> AnyPublisher<T, Failure> where P.Output == T, P.Failure == Failure {
+        func open(_ publisher: some Publisher<Output, Failure>) -> AnyPublisher<T, Failure> {
+            publisher.map(transform).switchToLatest().eraseToAnyPublisher()
+        }
+        return open(publisher)
+    }
+
+    @_disfavoredOverload
+    @inlinable
+    public func flatMap<T, P: Publisher>(
+        _ transform: @escaping (Output) -> P
+    ) -> AnyPublisher<T, Failure> where P.Output == T, P.Failure == Never {
+        flatMap { transform($0).setFailureType(to: Failure.self) }
+    }
+
+    @_disfavoredOverload
+    @inlinable
+    public func flatMap<T, P: Publisher, E: Error>(
+        _ transform: @escaping (Output) -> P
+    ) -> AnyPublisher<T, E> where P.Output == T, P.Failure == E, Failure == Never {
+        setFailureType(to: E.self).flatMap(transform)
+    }
+
     @inlinable
     public func assertNoFailure(
         _ prefix: String = "",

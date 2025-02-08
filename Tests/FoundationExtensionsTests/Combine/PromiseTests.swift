@@ -52,32 +52,87 @@ final class PromiseTests: XCTestCase {
         XCTAssertEqual(resultExpectations2, .completed)
         XCTAssertEqual(resultExpectationPromise2ReceiveValue, .timedOut, "Expectation was unexpectedly fulfilled")
 
-        // Test cancellation
-        let expectationPromise3Operation = XCTestExpectation(description: "promise3 operation executed")
-        let expectationPromise3Cancellation = XCTestExpectation(description: "promise3 cancelled")
+        let expectationPromise3ReceiveCompletion = XCTestExpectation(description: "promise 3 finished")
+        let promise3 = Publishers.Promise<Int, Error> { 100 }
+        var value3: Int?
+        let cancellable3 = promise3.sink(
+            receiveCompletion: { completion in
+                if case .finished = completion {
+                    expectationPromise3ReceiveCompletion.fulfill()
+                }
+            },
+            receiveValue: { value in
+                value3 = value
+            }
+        )
+        let resultExpectationPromise3ReceiveCompletion = XCTWaiter.wait(for: [expectationPromise3ReceiveCompletion], timeout: 0.1)
+        XCTAssertEqual(resultExpectationPromise3ReceiveCompletion, .completed)
+        XCTAssertEqual(value3, 100)
 
-        let promise3 = Publishers.Promise<Int, MockError> { _ in
-            expectationPromise3Operation.fulfill()
+        let expectationPromise4ReceiveCompletion = XCTestExpectation(description: "promise 4 failed")
+        let promise4 = Publishers.Promise<Int, Error> {
+            throw MockError.foo
+        }
+        var value4: Int?
+        let cancellable4 = promise4.sink(
+            receiveCompletion: { completion in
+                if case .failure(MockError.foo) = completion {
+                    expectationPromise4ReceiveCompletion.fulfill()
+                }
+            },
+            receiveValue: { value in
+                value4 = value
+            }
+        )
+        let resultExpectationPromise4ReceiveCompletion = XCTWaiter.wait(for: [expectationPromise4ReceiveCompletion], timeout: 0.1)
+        XCTAssertEqual(resultExpectationPromise4ReceiveCompletion, .completed)
+        XCTAssertNil(value4)
+
+        let expectationPromise5ReceiveCompletion = XCTestExpectation(description: "promise 5 finished")
+        let promise5 = Publishers.Promise<Int, Never> { 200 }
+        var value5: Int?
+        let cancellable5 = promise5.sink(
+            receiveCompletion: { _ in
+                expectationPromise5ReceiveCompletion.fulfill()
+            },
+            receiveValue: { value in
+                value5 = value
+            }
+        )
+        let resultExpectationPromise5ReceiveCompletion = XCTWaiter.wait(for: [expectationPromise5ReceiveCompletion], timeout: 0.1)
+        XCTAssertEqual(resultExpectationPromise5ReceiveCompletion, .completed)
+        XCTAssertEqual(value5, 200)
+
+        // Test cancellation
+        let expectationPromise6Operation = XCTestExpectation(description: "promise6 operation executed")
+        let expectationPromise6Cancellation = XCTestExpectation(description: "promise6 cancelled")
+
+        let promise6 = Publishers.Promise<Int, MockError> { _ in
+            expectationPromise6Operation.fulfill()
             return AnyCancellable {
-                expectationPromise3Cancellation.fulfill()
+                expectationPromise6Cancellation.fulfill()
             }
         }
 
-        let cancellable3 = promise3.sink(
+        let cancellable6 = promise6.sink(
             receiveCompletion: { _ in },
             receiveValue: { _ in }
         )
 
-        cancellable3.cancel()
+        cancellable6.cancel()
 
-        let resultExpectations3 = XCTWaiter.wait(for: [
-            expectationPromise3Operation,
-            expectationPromise3Cancellation
+        let resultExpectations6 = XCTWaiter.wait(for: [
+            expectationPromise6Operation,
+            expectationPromise6Cancellation
         ], timeout: 0.1)
-        XCTAssertEqual(resultExpectations3, .completed)
+        XCTAssertEqual(resultExpectations6, .completed)
 
         _ = cancellable1
         _ = cancellable2
+        _ = cancellable3
+        _ = cancellable4
+        _ = cancellable5
+        _ = cancellable6
     }
 
     @available(macOS 12.0, iOS 15.0, watchOS 8.0, tvOS 15.0, *)
@@ -118,8 +173,27 @@ final class PromiseTests: XCTestCase {
         XCTAssertEqual(resultExpectationPromise2ReceiveCompletion, .completed)
         XCTAssertEqual(resultExpectationPromise2ReceiveValue, .timedOut, "Expectation was unexpectedly fulfilled")
 
+        let expectationPromise3ReceiveCompletion = XCTestExpectation(description: "promise 3 completes")
+        let promise3 = Publishers.Promise<Int, Never> {
+            try? await Task.sleep(nanoseconds: 1_000_000)
+            return 300
+        }
+        var value3: Int?
+        let cancellable3 = promise3.sink(
+            receiveCompletion: { _ in
+                expectationPromise3ReceiveCompletion.fulfill()
+            },
+            receiveValue: { value in
+                value3 = value
+            }
+        )
+        let resultExpectationPromise3ReceiveCompletion = XCTWaiter.wait(for: [expectationPromise3ReceiveCompletion], timeout: 1.0)
+        XCTAssertEqual(resultExpectationPromise3ReceiveCompletion, .completed)
+        XCTAssertEqual(value3, 300)
+
         _ = cancellable1
         _ = cancellable2
+        _ = cancellable3
     }
 
     func testPromise_Value() {
@@ -1300,8 +1374,54 @@ final class PromiseTests: XCTestCase {
         XCTAssertEqual(resultExpectationPromise2ReceiveCompletion, .completed)
         XCTAssertEqual(resultExpectationPromise2ReceiveValue, .timedOut, "Expectation was unexpectedly fulfilled")
 
+        let expectationPromise3ReceiveCompletion = XCTestExpectation(description: "promise3 is finished")
+        let expectationPromise3Fallback = XCTestExpectation(description: "promise3 fallback is not called")
+        let expectationPromise3ReceiveValue = XCTestExpectation(description: "promise3 received value")
+        let expectationPromise4ReceiveCompletion = XCTestExpectation(description: "promise4 is finished")
+        let expectationPromise4Fallback = XCTestExpectation(description: "promise4 fallback is not called")
+        let expectationPromise4ReceiveValue = XCTestExpectation(description: "promise4 receive value")
+
+        let subject3 = PassthroughSubject<Void, MockError>()
+        let promise3 = subject3
+            .eraseToAnyPublisher()
+            .eraseToPromise(onEmpty: { expectationPromise3Fallback.fulfill(); return .success(()) })
+        let promise4 = subject3
+            .eraseToAnyPublisher()
+            .eraseToPromise(onEmpty: { expectationPromise4Fallback.fulfill(); return .success(()) })
+
+        let cancellable3 = promise3
+            .sink(
+                receiveCompletion: { if case .finished = $0 { expectationPromise3ReceiveCompletion.fulfill() } },
+                receiveValue: { expectationPromise3ReceiveValue.fulfill() }
+            )
+
+        subject3.send(())
+
+        let cancellable4 = promise4
+            .sink(
+                receiveCompletion: { if case .finished = $0 { expectationPromise4ReceiveCompletion.fulfill() } },
+                receiveValue: { expectationPromise4ReceiveValue.fulfill() }
+            )
+
+        subject3.send(())
+
+        let resultExpectationPromise3Fallback = XCTWaiter.wait(for: [expectationPromise3Fallback], timeout: 0.3)
+        let resultExpectationPromise3ReceiveCompletion = XCTWaiter.wait(for: [expectationPromise3ReceiveCompletion], timeout: 0.1)
+        let resultExpectationPromise3ReceiveValue = XCTWaiter.wait(for: [expectationPromise3ReceiveValue], timeout: 0.1)
+        let resultExpectationPromise4Fallback = XCTWaiter.wait(for: [expectationPromise4Fallback], timeout: 0.3)
+        let resultExpectationPromise4ReceiveCompletion = XCTWaiter.wait(for: [expectationPromise4ReceiveCompletion], timeout: 0.1)
+        let resultExpectationPromise4ReceiveValue = XCTWaiter.wait(for: [expectationPromise4ReceiveValue], timeout: 0.1)
+        XCTAssertEqual(resultExpectationPromise3Fallback, .timedOut, "Expectation was unexpectedly fulfilled")
+        XCTAssertEqual(resultExpectationPromise3ReceiveCompletion, .completed)
+        XCTAssertEqual(resultExpectationPromise3ReceiveValue, .completed)
+        XCTAssertEqual(resultExpectationPromise4Fallback, .timedOut, "Expectation was unexpectedly fulfilled")
+        XCTAssertEqual(resultExpectationPromise4ReceiveCompletion, .completed)
+        XCTAssertEqual(resultExpectationPromise4ReceiveValue, .completed)
+
         _ = cancellable1
         _ = cancellable2
+        _ = cancellable3
+        _ = cancellable4
     }
 
     func testPromise_validStatusCode() {
@@ -1708,8 +1828,45 @@ final class PromiseTests: XCTestCase {
         ], timeout: 0.1)
         XCTAssertEqual(resultExpectations4, .completed)
 
+        let expectationPromise5ReceiveCompletion = XCTestExpectation(description: "promise5 completed")
+        var value5 = ""
+
+        let subject5 = PassthroughSubject<Int, MockError>()
+        let promise5 = subject5
+            .assertPromise("testPromise_flatMap: ")
+            .flatMap { _ -> AnyPublisher<String, MockError> in
+                Publishers.Promise(value: "42")
+                    .eraseToAnyPublisher()
+            }
+
+        let cancellable5 = promise5.sink(
+            receiveCompletion: { if case .finished = $0 { expectationPromise5ReceiveCompletion.fulfill() } },
+            receiveValue: { value5 = $0 }
+        )
+
+        subject5.send(42)
+
+
+        let resultExpectations5 = XCTWaiter.wait(for: [expectationPromise5ReceiveCompletion], timeout: 0.1)
+        XCTAssertEqual(resultExpectations5, .completed)
+        XCTAssertEqual(value5, "42")
+
+        let _: AnyPublisher<String, MockError> = PassthroughSubject<Int, MockError>()
+            .assertPromise("testPromise_flatMap: ")
+            .flatMap { _ -> AnyPublisher<String, Never> in
+                Publishers.Promise(value: "42")
+                    .eraseToAnyPublisher()
+            }
+
+        let _: AnyPublisher<String, MockError> = PassthroughSubject<Int, Never>()
+            .assertPromise("testPromise_flatMap: ")
+            .flatMap { _ -> AnyPublisher<String, MockError> in
+                Publishers.Promise(value: "42")
+                    .eraseToAnyPublisher()
+            }
+
         // Update the cancellables array at the end
-        _ = [cancellable1, cancellable2, cancellable3, cancellable4]
+        _ = [cancellable1, cancellable2, cancellable3, cancellable4, cancellable5]
     }
 }
 
