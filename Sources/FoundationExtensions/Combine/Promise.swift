@@ -55,6 +55,12 @@ extension Publishers {
         }
 
         @inlinable
+        public init(_ operation: @escaping @Sendable () throws -> Output) where Failure == Error {
+            self.init(.init(catching: operation))
+        }
+
+        @_disfavoredOverload
+        @inlinable
         public init(_ asyncFunc: @escaping @Sendable () async throws -> Output) where Failure == Error {
             self.init { promise in
                 let task = Task {
@@ -70,6 +76,12 @@ extension Publishers {
             }
         }
 
+        @inlinable
+        public init(_ operation: @escaping @Sendable () -> Output) where Failure == Never {
+            self.init(value: operation())
+        }
+
+        @_disfavoredOverload
         @inlinable
         public init(_ asyncFunc: @escaping @Sendable () async -> Output) where Failure == Never {
             self.init { promise in
