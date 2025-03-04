@@ -69,3 +69,51 @@ extension ResultType {
         return zip(asResult(), other())
     }
 }
+
+extension Result {
+    /// Creates a result of a pair built out of two wrapped result values if both succeed, or an error result with
+    /// left-hand-side error or right-hand-side error, what comes first.
+    ///
+    /// - Parameters:
+    ///   - r1: first result type
+    ///   - r2: second result type
+    /// - Returns: result of a tuple
+    public static func zip<OriginResult: ResultType>(
+        _ r1: OriginResult,
+        _ r2: OriginResult
+    ) -> Result<(OriginResult.Success, OriginResult.Success), OriginResult.Failure> {
+        FoundationExtensions.zip(r1, r2)
+    }
+    
+    /// Creates a result of a tuple built out of 3 wrapped result values, or an error result with the error found first
+    ///
+    /// - Parameters:
+    ///   - r1: first result type
+    ///   - r2: second result type
+    ///   - r3: third result type
+    /// - Returns: result of a tuple
+    public static func zip<OriginResult: ResultType>(
+        _ r1: OriginResult,
+        _ r2: OriginResult,
+        _ r3: OriginResult
+    ) -> Result<(OriginResult.Success, OriginResult.Success, OriginResult.Success), OriginResult.Failure> {
+        FoundationExtensions.zip(r1, r2, r3)
+    }
+    
+    /// Creates a result of a tuple built out of 3 wrapped result values, or an error result with the error found first
+    ///
+    /// - Parameters:
+    ///   - r1: first result type
+    ///   - r2: second result type
+    ///   - r3: third result type
+    ///   - r4: fourth result type
+    /// - Returns: result of a tuple
+    public static func zip<OriginResult: ResultType>(
+        _ r1: OriginResult,
+        _ r2: OriginResult,
+        _ r3: OriginResult,
+        _ r4: OriginResult
+    ) -> Result<(OriginResult.Success, OriginResult.Success, OriginResult.Success, OriginResult.Success), OriginResult.Failure> {
+        FoundationExtensions.zip(r1, r2, r3, r4)
+    }
+}
