@@ -5,6 +5,8 @@
 import Foundation
 
 public enum Localizer {
+    private static let preferredLanguage = Locale.preferredLanguages.first
+    
     public enum FallbackMode: String, CaseIterable, Codable {
         /// Fetches the English value of the translation key.
         case fallbackToEnglish
@@ -48,7 +50,7 @@ public enum Localizer {
         let value = NSLocalizedString(key, bundle: bundle, comment: comment)
 
         // If the user's language is english, we don't need to handle the mode.
-        guard Locale.preferredLanguages.first != "en" else {
+        guard Self.preferredLanguage != "en" else {
             return value
         }
 
