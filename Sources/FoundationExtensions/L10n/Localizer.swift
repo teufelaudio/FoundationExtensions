@@ -3,10 +3,11 @@
 // swiftlint:disable nslocalizedstring_key
 /// Controls localization of the app.
 import Foundation
+#if canImport(UIKit)
+import UIKit
+#endif
 
 public enum Localizer {
-    private static let preferredLanguage = Locale.preferredLanguages.first
-    
     public enum FallbackMode: String, CaseIterable, Codable {
         /// Fetches the English value of the translation key.
         case fallbackToEnglish
@@ -26,26 +27,91 @@ public enum Localizer {
             }
         }
     }
+}
 
-    // Swift 6 requires statics to be thread safe!
+// MARK: - Thread safe access to preferredLanguage
+
+extension Localizer {
+
+    // This code runs exactly once, because of `private static let foo = { bar }()`
+    private static let _setup: Void = {
+        // make sure we are notified, when the preferred language could have been changed
+        #if canImport(UIKit)
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            Task { @MainActor in
+                updatePreferredLanguage()
+            }
+        }
+        #endif
+        NotificationCenter.default.addObserver(
+            forName: NSLocale.currentLocaleDidChangeNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            Task { @MainActor in
+                updatePreferredLanguage()
+            }
+        }
+        // Set the initial value
+        Task { @MainActor in
+            updatePreferredLanguage()
+        }
+    }()
+
+    nonisolated(unsafe) private static var _preferredLanguage: String? = "en"
+    private static let preferredLanguageLock = NSLock()
+
+    private static var preferredLanguage: String? {
+        get {
+            preferredLanguageLock.lock()
+            defer { preferredLanguageLock.unlock() }
+            return _preferredLanguage
+        }
+        set {
+                        preferredLanguageLock.lock()
+            defer { preferredLanguageLock.unlock() }
+            _preferredLanguage = newValue
+        }
+    }
+
+    private static func updatePreferredLanguage() {
+        preferredLanguage = Locale.preferredLanguages.first
+    }
+}
+
+// MARK: - Thread safe access to fallbackMode
+
+extension Localizer {
+
     nonisolated(unsafe) private static var _fallbackMode: FallbackMode = .fallbackToEnglish
-    private static let lock = NSLock()
+    private static let fallbackModeLock = NSLock()
 
     /// Determines how keys without a translation in the Locale language should be handled.
     public static var fallbackMode: FallbackMode {
         get {
-            lock.lock()
-            defer { lock.unlock() }
+            fallbackModeLock.lock()
+            defer { fallbackModeLock.unlock() }
             return _fallbackMode
         }
         set {
-            lock.lock()
-            defer { lock.unlock() }
+            fallbackModeLock.lock()
+            defer { fallbackModeLock.unlock() }
             _fallbackMode = newValue
         }
     }
+}
+
+// Mark: Localisation business
+
+extension Localizer {
 
     fileprivate static func localizedString(_ key: String, bundle: Bundle, comment: String) -> String {
+        _ = _setup // setup once, later it's a chaep NOP
+
         // Code here is adopted from https://stackoverflow.com/a/48415872
         let value = NSLocalizedString(key, bundle: bundle, comment: comment)
 
