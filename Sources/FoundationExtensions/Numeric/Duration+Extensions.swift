@@ -7,12 +7,12 @@
 
 @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
 extension Duration {
-    @inlinable public static func minutes<T>(_ minutes: T) -> Duration where T : BinaryInteger {
-        .seconds(minutes * 60)
+    public static func minutes(_ minutes: Int32) -> Duration {
+        .seconds(Int64(minutes) * 60)
     }
     
-    @inlinable public static func hours<T>(_ hours: T) -> Duration where T : BinaryInteger {
-        .minutes(hours * 60)
+    public static func hours(_ hours: Int32) -> Duration {
+        .seconds(Int64(hours) * 60 * 60)
     }
 }
 
