@@ -5,26 +5,65 @@ import FoundationExtensions
 import XCTest
 
 class OptionalExtensionTests: XCTestCase {
-    func testIsSomeTrue() {
-        // given
-        let optional: Int? = 42
-
-        // when
-        let sut = optional.isSome
-
-        // then
-        XCTAssertTrue(sut)
+    func testSingleOptionalSome() {
+        let value: Int? = 10
+        XCTAssertTrue(value.isSome)
+        XCTAssertFalse(value.isNone)
     }
 
-    func testIsSomeFalse() {
-        // given
-        let optional: Int? = nil
+    func testSingleOptionalNone() {
+        let value: Int? = nil
+        XCTAssertFalse(value.isSome)
+        XCTAssertTrue(value.isNone)
+    }
 
-        // when
-        let sut = optional.isSome
+    func testDoubleOptionalSomeSome() {
+        let value: Int?? = .some(.some(10))
+        XCTAssertTrue(value.isSome)
+        XCTAssertFalse(value.isNone)
+    }
 
-        // then
-        XCTAssertFalse(sut)
+    func testDoubleOptionalSomeNone() {
+        let value: Int?? = .some(nil)
+        XCTAssertFalse(value.isSome)
+        XCTAssertTrue(value.isNone)
+    }
+
+    func testDoubleOptionalNone() {
+        let value: Int?? = nil
+        XCTAssertFalse(value.isSome)
+        XCTAssertTrue(value.isNone)
+    }
+
+    func testTripleOptionalSomeSomeSome() {
+        let value: Int??? = .some(.some(.some(5)))
+        XCTAssertTrue(value.isSome)
+    }
+
+    func testTripleOptionalSomeSomeNone() {
+        let value: Int??? = .some(.some(nil))
+        XCTAssertFalse(value.isSome)
+    }
+
+    func testTripleOptionalSomeNone() {
+        let value: Int??? = .some(nil)
+        XCTAssertFalse(value.isSome)
+    }
+
+    func testTripleOptionalNone() {
+        let value: Int??? = nil
+        XCTAssertFalse(value.isSome)
+    }
+
+    func testNonOptionalWrappedValue() {
+        let value: Optional<String> = .some("hello")
+        XCTAssertTrue(value.isSome)
+        XCTAssertFalse(value.isNone)
+    }
+
+    func testNonOptionalWrappedValueEmptyString() {
+        let value: Optional<String> = .some("")
+        XCTAssertTrue(value.isSome)
     }
 
     func testIsNoneTrue() {
