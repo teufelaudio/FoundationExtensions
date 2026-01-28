@@ -275,7 +275,7 @@ extension Publishers.Promise: Publisher {
     @inlinable
     public func flatMap<T>(_ transform: @escaping (Output) -> Publishers.Promise<T, Failure>) -> Publishers.Promise<T, Failure> {
         func open(_ publisher: some Publisher<Output, Failure>) -> Publishers.Promise<T, Failure> {
-            publisher.map(transform).switchToLatest().assertPromise("Publishers.Promise.flatMap(_:)")
+            publisher.prefix(1).flatMap(maxPublishers: .max(1), transform).assertPromise("Publishers.Promise.flatMap(_:)")
         }
         return open(publisher)
     }
@@ -298,7 +298,7 @@ extension Publishers.Promise: Publisher {
         _ transform: @escaping (Output) -> P
     ) -> AnyPublisher<T, Failure> where P.Output == T, P.Failure == Failure {
         func open(_ publisher: some Publisher<Output, Failure>) -> AnyPublisher<T, Failure> {
-            publisher.map(transform).switchToLatest().eraseToAnyPublisher()
+            publisher.prefix(1).flatMap(maxPublishers: .max(1), transform).eraseToAnyPublisher()
         }
         return open(publisher)
     }
