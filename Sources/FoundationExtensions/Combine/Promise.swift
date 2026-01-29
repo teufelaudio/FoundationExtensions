@@ -3,6 +3,7 @@
 #if canImport(Combine)
 import Combine
 import OSLog
+import Foundation
 
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Publishers {
@@ -41,7 +42,11 @@ extension Publishers {
                     #if swift(>=6)
                     nonisolated(unsafe) let promise = promise
                     #endif
-                    return operation { result in
+                    // Promise can finish after cancel (or double-send) and crash downstream;
+                    // Swift 6 also forbids mutable captured state in @Sendable closures. Gate enforces "send once, ignore after cancel".
+                    let gate = PromiseGate()
+                    let cancellable = operation { result in
+                        guard gate.beginDeliver() else { return }
                         switch result {
                         case let .success(value):
                             promise.send(value)
@@ -49,6 +54,10 @@ extension Publishers {
                         case let .failure(error):
                             promise.send(completion: .failure(error))
                         }
+                    }
+                    return AnyCancellable {
+                        gate.cancel()
+                        cancellable.cancel()
                     }
                 }
             )
@@ -196,6 +205,35 @@ extension Publishers {
                 }
             )
         }
+    }
+}
+
+private final class PromiseGate: @unchecked Sendable {
+    private let lock = NSLock()
+    private var state: State = .pending
+
+    // Returns false if already cancelled or delivered.
+    func beginDeliver() -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        guard state == .pending else { return false }
+        state = .delivered
+        return true
+    }
+
+    // Marks cancel so late completions are ignored.
+    func cancel() {
+        lock.lock()
+        if state == .pending {
+            state = .cancelled
+        }
+        lock.unlock()
+    }
+
+    private enum State {
+        case pending
+        case cancelled
+        case delivered
     }
 }
 #endif
