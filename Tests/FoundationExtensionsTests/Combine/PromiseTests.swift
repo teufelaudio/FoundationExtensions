@@ -1868,6 +1868,55 @@ final class PromiseTests: XCTestCase {
         // Update the cancellables array at the end
         _ = [cancellable1, cancellable2, cancellable3, cancellable4, cancellable5]
     }
+
+    func testPromise_IgnoresLateSendAfterCancel() {
+        let didReceiveValue = XCTestExpectation(description: "no value after cancel")
+        didReceiveValue.isInverted = true // we fail if .fulfill() is called
+        let didReceiveCompletion = XCTestExpectation(description: "no completion after cancel")
+        didReceiveCompletion.isInverted = true // we fail if .fulfill() is called
+
+        let stored = Atomic<((Result<Int, MockError>) -> Void)?>(nil)
+        let promise = Publishers.Promise<Int, MockError> { promise in
+            stored.withLock { $0 = promise }
+            return AnyCancellable { }
+        }
+
+        let cancellable = promise.sink(
+            receiveCompletion: { _ in didReceiveCompletion.fulfill() },
+            receiveValue: { _ in didReceiveValue.fulfill() }
+        )
+
+        // after cancel...
+        cancellable.cancel()
+        // ...this value should be ignored
+        stored.withLock { $0?(.success(123)) }
+
+        XCTAssertEqual(XCTWaiter.wait(for: [didReceiveValue, didReceiveCompletion], timeout: 0.2), .completed)
+        _ = cancellable
+    }
+    
+    func testPromise_IgnoresDoubleSend() {
+        let didReceiveValue = XCTestExpectation(description: "single value")
+        didReceiveValue.expectedFulfillmentCount = 1
+        didReceiveValue.assertForOverFulfill = true
+        let didReceiveCompletion = XCTestExpectation(description: "single completion")
+        didReceiveCompletion.expectedFulfillmentCount = 1
+        didReceiveCompletion.assertForOverFulfill = true
+
+        let promise = Publishers.Promise<Int, MockError> { promise in
+            promise(.success(1))
+            promise(.success(2))
+            return AnyCancellable { }
+        }
+
+        let cancellable = promise.sink(
+            receiveCompletion: { _ in didReceiveCompletion.fulfill() },
+            receiveValue: { _ in didReceiveValue.fulfill() }
+        )
+
+        XCTAssertEqual(XCTWaiter.wait(for: [didReceiveValue, didReceiveCompletion], timeout: 0.2), .completed)
+        _ = cancellable
+    }
 }
 
 fileprivate enum MockError: Error, Sendable {
