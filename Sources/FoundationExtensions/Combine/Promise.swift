@@ -44,9 +44,9 @@ extension Publishers {
                     #endif
                     // Promise can finish after cancel (or double-send) and crash downstream;
                     // Swift 6 also forbids mutable captured state in @Sendable closures. Gate enforces "send once, ignore after cancel".
-                    let gate = GateState()
+                    let gate = PromiseGate()
                     let cancellable = operation { result in
-                        guard gate.markEmitted() else { return }
+                        guard gate.beginDeliver() else { return }
                         switch result {
                         case let .success(value):
                             promise.send(value)
